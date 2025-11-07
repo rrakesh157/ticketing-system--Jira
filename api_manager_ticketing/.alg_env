@@ -1,0 +1,13 @@
+db_urls={"postgres_async": ["postgresql+asyncpg://localhost:5432/fastapi?user=postgres&password=nani157"], "redis": ["redis://localhost:6379"]}
+# db_urls={"postgres_async": ["postgresql+asyncpg://140.245.238.142:5432/hpcl_ceg?user=ceg_user&password=UUMrftkiJLPM50jD"], "redis": ["redis://localhost:6379"]}
+import_paths={"base_path": "/Users/algofusion/Documents/GitHub/dnc_backend_v2/", "api_path": "/Users/algofusion/Documents/GitHub/dnc_backend_v2/api_manager", "orchestrator": "/Users/algofusion/Documents/GitHub/dnc_backend_v2/orchestrator", "alerting": "/Users/algofusion/Documents/GitHub/dnc_backend_v2/orchestrator/alerting"}
+camunda_url="http://localhost:8082"
+smtp_host="smtp.gmail.com"
+smtp_port=587
+smtp_from_url="yesu.p@algofusiontech.com"
+smtp_username="yesu.p@algofusiontech.com"
+smtp_password="vazm ymuy ckod pvkt"
+smtp_tls_enabled=False
+smtp_ssl_enabled=False
+db_connection_mapping={"2": {"cred_model": "Databases", "cred_type": "PostgreSQL"},"3": {"cred_model": "Databases", "cred_type": "Oracle"},"1": {"cred_model": "Databases", "cred_type": "PostgreSQL"}}
+ticketing_attachments="/opt/downloads/"                                                                                                   
