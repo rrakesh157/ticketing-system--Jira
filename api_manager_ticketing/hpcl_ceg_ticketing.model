@@ -141,6 +141,7 @@ Model Ticketing {
     }
 
     Action=> update_ticket {
+        
         bu optional str
         sap_id optional str
         sop_id optional str

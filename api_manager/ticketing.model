@@ -21,7 +21,6 @@ Enum Severity str {
 }
 
 
-
 Enum TicketType str{
     ToDo = 'TicketRaised'
     InProgress = 'TicketInProgress'
@@ -91,13 +90,30 @@ Model Ticketing {
 
     }
 
+    Action=> update_ticket {
+        ticket_status Status
+        ticket_state State
+        start_date optional datetime
+        end_date optional datetime
+        summary str
+        description str
+        ticket_severity Severity
+    }
 
-    Action=> get_ticket_id{
+
+    Action=> get_ticket_id {
         ticket_id str
     }
 
-    
+    Action=> attach_file{
+        ticket_id optional str
+        tid optional str
+        file_path optional str
+    }
 
+
+
+    
     Config=>{
         crud_operations='read'
 

@@ -27,7 +27,6 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
     t_id += 1
 
     startdate_str = tdata.get('startdate')
-
     if startdate_str:
         try:
             startdate = parser.isoparse(startdate_str)
@@ -63,40 +62,37 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
     tdata['ticket_history'].append({
         "processed_time":processed_time.isoformat(),
         "allocated_time":startdate.isoformat() if startdate else processed_time.isoformat(),
-        "action_msg":f"Ticket is created and is in {tdata['ticket_state']} state",
+        "action_msg":f"Ticket is created and is in {action_type_str} state",
         "action_type":action_type_str})
-   
-
-   
-    
-
-    # tdata.update()
-
-    
-
-    
 
     await ticketing_model.TicketingCreate(**tdata).create()
+    return {
+        'Message':'Tickets Created Successfully',
+        'Ticket':tdata
+    }
     
-    # await ticketing_model.TicketingCreate(**tdata).create()
-    return True
-
-    # params = urdhva_base.queryparams.QueryParams(q=query,limit=1000)
-
-    # print(params)
-
-    # # q="alert_section='hello and sap_id='432' and location_name='hyd'" search_text=None skip=0 limit=1000 sort=None fields=None view=None
-    
-    # return 
-    # params.fields = ['sop_id','alert_section','sap_id','location_name','interlock_name','unique_id']
-
-    # resp  = await BasePostgresModel.get_all()
-    
-
-
 
 
 # Action get_ticket_id
 @router.post('/get-ticket-id', tags=['Ticketing'])
 async def ticketing_get_ticket_id(data: ticketing_model.TicketingGetTicketIdParams):
+    
+    ...
+
+
+# Action attach_file
+@router.post('/attach-file', tags=['Ticketing'])
+async def ticketing_attach_file(data: ticketing_model.TicketingAttachFileParams):
+    ...
+
+
+# Action attach_file
+@router.post('/attach-file', tags=['Ticketing'])
+async def ticketing_attach_file(data: ticketing_model.TicketingAttachFileParams):
+    ...
+
+
+# Action update_ticket
+@router.post('/update-ticket', tags=['Ticketing'])
+async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketParams):
     ...

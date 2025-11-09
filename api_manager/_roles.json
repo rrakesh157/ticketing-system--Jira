@@ -29,7 +29,13 @@
                     "name": "create_ticket"
                 },
                 {
+                    "name": "update_ticket"
+                },
+                {
                     "name": "get_ticket_id"
+                },
+                {
+                    "name": "attach_file"
                 }
             ]
         },
@@ -77,7 +83,13 @@
                     "name": "create_ticket"
                 },
                 {
+                    "name": "update_ticket"
+                },
+                {
                     "name": "get_ticket_id"
+                },
+                {
+                    "name": "attach_file"
                 }
             ]
         }
@@ -163,8 +175,16 @@
             "displayName": "create_ticket"
         },
         {
+            "name": "update_ticket",
+            "displayName": "update_ticket"
+        },
+        {
             "name": "get_ticket_id",
             "displayName": "get_ticket_id"
+        },
+        {
+            "name": "attach_file",
+            "displayName": "attach_file"
         }
     ]
 }
