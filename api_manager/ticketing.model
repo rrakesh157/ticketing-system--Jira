@@ -106,18 +106,25 @@ Model Ticketing {
 
     }
 
+    Action=> delete_ticket{
+        delete_id str
+
+    }
 
     Action=> Attach_File {
+
         ticket_id optional str
         tid optional str
         file_path optional str
     }
 
 
-    Action=> get_ticket_id {
+    Action=> delete_file_attachment{
         ticket_id str
     }
-    
+
+
+
 
     Config=>{
         crud_operations='read'

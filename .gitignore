@@ -1,4 +1,45 @@
-venv/
+# --- Python ---
 __pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environments ---
+env/
+venv/
+.venv/
+
+# --- Environment Variables ---
 .env
+.env.*      
+
+# --- IDE and Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Byte-compiled / Cache ---
+*.pyo
+*.pyd
+*.pdb
+*.pkl
+*.pickle
+*.egg-info/
+.eggs/
+.cache/
+.mypy_cache/
+.pytest_cache/
+
+# --- Logs ---
 *.log
+
+# --- Database / Local Files ---
+*.sqlite3
+*.db
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+
+
+.vscode/

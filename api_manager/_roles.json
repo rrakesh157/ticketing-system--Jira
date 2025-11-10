@@ -32,10 +32,13 @@
                     "name": "update_ticket"
                 },
                 {
+                    "name": "delete_ticket"
+                },
+                {
                     "name": "attach_file"
                 },
                 {
-                    "name": "get_ticket_id"
+                    "name": "delete_file_attachment"
                 }
             ]
         },
@@ -51,9 +54,6 @@
             "scopes": [
                 {
                     "name": "read"
-                },
-                {
-                    "name": "get_ticket_id"
                 }
             ]
         },
@@ -86,10 +86,13 @@
                     "name": "update_ticket"
                 },
                 {
+                    "name": "delete_ticket"
+                },
+                {
                     "name": "attach_file"
                 },
                 {
-                    "name": "get_ticket_id"
+                    "name": "delete_file_attachment"
                 }
             ]
         }
@@ -179,12 +182,16 @@
             "displayName": "update_ticket"
         },
         {
+            "name": "delete_ticket",
+            "displayName": "delete_ticket"
+        },
+        {
             "name": "attach_file",
             "displayName": "attach_file"
         },
         {
-            "name": "get_ticket_id",
-            "displayName": "get_ticket_id"
+            "name": "delete_file_attachment",
+            "displayName": "delete_file_attachment"
         }
     ]
 }

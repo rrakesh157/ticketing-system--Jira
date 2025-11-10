@@ -180,6 +180,14 @@ class TicketingUpdateTicketParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
+class TicketingDeleteTicketParams(pydantic.BaseModel):
+    delete_id: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
 class TicketingAttachFileParams(pydantic.BaseModel):
     ticket_id: typing.Optional[str] = pydantic.Field("", **{})
     tid: typing.Optional[str] = pydantic.Field("", **{})
@@ -190,7 +198,7 @@ class TicketingAttachFileParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
-class TicketingGetTicketIdParams(pydantic.BaseModel):
+class TicketingDeleteFileAttachmentParams(pydantic.BaseModel):
     ticket_id: str
 
     class Config:

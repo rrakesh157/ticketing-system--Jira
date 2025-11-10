@@ -8,8 +8,9 @@ from ticketing_enum import TicketType, Status, State
 from dateutil import parser
 import ticketing_model
 from ticketing_model import *
-from fastapi import FastAPI,APIRouter
+from fastapi import FastAPI,APIRouter, Form, UploadFile, File,HTTPException
 from datetime import datetime
+from typing import Optional
 from urdhva_base import BasePostgresModel
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -99,14 +100,6 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
     }
     
 
-
-# Action get_ticket_id
-@router.post('/get-ticket-id', tags=['Ticketing'])
-async def ticketing_get_ticket_id(data: ticketing_model.TicketingGetTicketIdParams):
-    ...
-
-
-
 # Action update_ticket
 @router.post('/update-ticket', tags=['Ticketing'])
 async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketParams):
@@ -171,6 +164,118 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
         "status":True,
         "message":f"Ticket {ticket_id} updated successfully",
         "updated_fields":data_dict
+    }
+
+
+
+
+# Action Attach_File
+@router.post('/attach-file', tags=['Ticketing'])
+async def ticketing_attach_file(
+    ticket_id: Optional[str] = Form(None),
+    tid:Optional[str] = Form(None),
+    uploadfile: UploadFile = File(None)
+):
+    
+    # creating the directory if doesn't exist
+    try:
+        print("comming...",urdhva_base.settings.ticketing_attachments)
+        target_dir = urdhva_base.settings.ticketing_attachments
+        print("target_dir",target_dir)
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+
+        temp_file_path = os.path.join(target_dir,uploadfile.filename)
+        
+        with open(temp_file_path,"wb") as f:
+            f.write(await uploadfile.read())
+        
+        print("File uploaded successfully at:",temp_file_path)
+        print("ticket_id-->",ticket_id)
+        print("tid-->",tid)
+
+        if ticket_id and tid:
+            query = f"ticket_id='{ticket_id}' and id = {tid}"
+            params = urdhva_base.queryparams.QueryParams(q=query)
+            result = await Ticketing.get_all(params,resp_type='plain')
+            res = result.get("data",[])
+            if not res:
+                return {
+                    "status":False,
+                    "message":"Ticket not found"
+                }
+            await Ticketing(**{"id":res[0].get("id"),"file_attachment":[temp_file_path]}).modify()
+
+        file_uuid = str(uuid.uuid4())
+        return {
+            "status":True,
+            "message":f"File {uploadfile.filename} saved successfully",
+            "file_attachment":temp_file_path,
+            "file_attachment_name":uploadfile.filename,
+            "file_attachment_id":file_uuid,
+            "content_type":uploadfile.content_type
+        }
+
+
+
+    except Exception as e:
+        return {
+            "status":False,
+            "message":f"Error saving file {str(e)}"
+        }
+
+
+
+# Action delete_ticket
+@router.post('/delete-ticket', tags=['Ticketing'])
+async def ticketing_delete_ticket(data: ticketing_model.TicketingDeleteTicketParams):
+    await Ticketing.delete(data.delete_id)
+    return {
+        "status":True,
+        "message":"Ticket Deleted successfully",
+        "data":data.delete_id
+    }
+
+
+
+
+# Action delete_file_attachment
+@router.post('/delete-file-attachment', tags=['Ticketing'])
+async def ticketing_delete_file_attachment(data: ticketing_model.TicketingDeleteFileAttachmentParams):
+    ticket_id = data.ticket_id
+
+    #To fetch the ticket
+    params = urdhva_base.queryparams.QueryParams()
+    params.q = f"ticket_id = '{ticket_id}'"
+    params.limit = 1
+
+    res = await Ticketing.get_all(params,resp_type='plain')
+
+    if not res or len(res.get("data",[])) == 0:
+        raise HTTPException(status_code=404, detail="Ticket not Found")
+    
+    print(">>>>>>>>>>>>>>>>",res)
+    
+    db_record = res["data"][0]
+
+    file_list = db_record.get('file_attachment') or []
+
+    for file_path in file_list:
+        if file_path and os.path.exists(file_path):
+            os.remove(file_path)
+
+
+    update_payload = {
+        "file_attchment" : [],
+        "file_attachment_name":"",
+        "file_attachment_id":""
+    }
+
+    await Ticketing(**{"ticket_id":ticket_id,**update_payload}).modify()
+    return {
+        "status":True,
+        'message':'file attachment deleted',
+        'data':ticket_id
     }
 
 
