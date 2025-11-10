@@ -75,7 +75,23 @@ Model Ticketing {
     
     Action=> create_ticket {
 
-	    ticket_status Status
+	    ticket_state State
+	    start_date optional datetime
+	    end_date optional datetime
+	    summary str
+	    description str
+	    ticket_severity Severity
+	    file_attachment optional list str
+	    comment_text optional str
+        assignee optional str
+        created_by optional str
+
+    }
+
+    Action=> update_ticket {
+
+
+        update_id str
 	    ticket_state State
 	    start_date optional datetime
 	    end_date optional datetime
@@ -90,30 +106,19 @@ Model Ticketing {
 
     }
 
-    Action=> update_ticket {
-        ticket_status Status
-        ticket_state State
-        start_date optional datetime
-        end_date optional datetime
-        summary str
-        description str
-        ticket_severity Severity
-    }
 
-
-    Action=> get_ticket_id {
-        ticket_id str
-    }
-
-    Action=> attach_file{
+    Action=> Attach_File {
         ticket_id optional str
         tid optional str
         file_path optional str
     }
 
 
-
+    Action=> get_ticket_id {
+        ticket_id str
+    }
     
+
     Config=>{
         crud_operations='read'
 

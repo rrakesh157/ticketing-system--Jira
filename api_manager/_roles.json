@@ -32,10 +32,10 @@
                     "name": "update_ticket"
                 },
                 {
-                    "name": "get_ticket_id"
+                    "name": "attach_file"
                 },
                 {
-                    "name": "attach_file"
+                    "name": "get_ticket_id"
                 }
             ]
         },
@@ -86,10 +86,10 @@
                     "name": "update_ticket"
                 },
                 {
-                    "name": "get_ticket_id"
+                    "name": "attach_file"
                 },
                 {
-                    "name": "attach_file"
+                    "name": "get_ticket_id"
                 }
             ]
         }
@@ -179,12 +179,12 @@
             "displayName": "update_ticket"
         },
         {
-            "name": "get_ticket_id",
-            "displayName": "get_ticket_id"
-        },
-        {
             "name": "attach_file",
             "displayName": "attach_file"
+        },
+        {
+            "name": "get_ticket_id",
+            "displayName": "get_ticket_id"
         }
     ]
 }

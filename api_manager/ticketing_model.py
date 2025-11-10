@@ -145,7 +145,24 @@ class TicketingGetResp(pydantic.BaseModel):
 
 
 class TicketingCreateTicketParams(pydantic.BaseModel):
-    ticket_status: ticketing_enum.Status
+    ticket_state: ticketing_enum.State
+    start_date: typing.Optional[datetime.datetime] | None = None
+    end_date: typing.Optional[datetime.datetime] | None = None
+    summary: str
+    description: str
+    ticket_severity: ticketing_enum.Severity
+    file_attachment: typing.Optional[typing.List[str]] = pydantic.Field("", **{})
+    comment_text: typing.Optional[str] = pydantic.Field("", **{})
+    assignee: typing.Optional[str] = pydantic.Field("", **{})
+    created_by: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketingUpdateTicketParams(pydantic.BaseModel):
+    update_id: str
     ticket_state: ticketing_enum.State
     start_date: typing.Optional[datetime.datetime] | None = None
     end_date: typing.Optional[datetime.datetime] | None = None
@@ -163,14 +180,10 @@ class TicketingCreateTicketParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
-class TicketingUpdateTicketParams(pydantic.BaseModel):
-    ticket_status: ticketing_enum.Status
-    ticket_state: ticketing_enum.State
-    start_date: typing.Optional[datetime.datetime] | None = None
-    end_date: typing.Optional[datetime.datetime] | None = None
-    summary: str
-    description: str
-    ticket_severity: ticketing_enum.Severity
+class TicketingAttachFileParams(pydantic.BaseModel):
+    ticket_id: typing.Optional[str] = pydantic.Field("", **{})
+    tid: typing.Optional[str] = pydantic.Field("", **{})
+    file_path: typing.Optional[str] = pydantic.Field("", **{})
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
@@ -179,16 +192,6 @@ class TicketingUpdateTicketParams(pydantic.BaseModel):
 
 class TicketingGetTicketIdParams(pydantic.BaseModel):
     ticket_id: str
-
-    class Config:
-        if urdhva_base.settings.disable_api_extra_inputs:
-            extra = "forbid"  # Disallow extra fields
-
-
-class TicketingAttachFileParams(pydantic.BaseModel):
-    ticket_id: typing.Optional[str] = pydantic.Field("", **{})
-    tid: typing.Optional[str] = pydantic.Field("", **{})
-    file_path: typing.Optional[str] = pydantic.Field("", **{})
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
