@@ -198,6 +198,15 @@ class TicketingAttachFileParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
+class TicketingDragCardParams(pydantic.BaseModel):
+    ticket_id: str
+    status: ticketing_enum.State
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
 class TicketingDeleteFileAttachmentParams(pydantic.BaseModel):
     ticket_id: str
 

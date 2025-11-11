@@ -38,6 +38,9 @@
                     "name": "attach_file"
                 },
                 {
+                    "name": "drag_card"
+                },
+                {
                     "name": "delete_file_attachment"
                 }
             ]
@@ -90,6 +93,9 @@
                 },
                 {
                     "name": "attach_file"
+                },
+                {
+                    "name": "drag_card"
                 },
                 {
                     "name": "delete_file_attachment"
@@ -188,6 +194,10 @@
         {
             "name": "attach_file",
             "displayName": "attach_file"
+        },
+        {
+            "name": "drag_card",
+            "displayName": "drag_card"
         },
         {
             "name": "delete_file_attachment",

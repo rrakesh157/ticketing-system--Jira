@@ -216,8 +216,6 @@ async def ticketing_attach_file(
             "content_type":uploadfile.content_type
         }
 
-
-
     except Exception as e:
         return {
             "status":False,
@@ -229,12 +227,26 @@ async def ticketing_attach_file(
 # Action delete_ticket
 @router.post('/delete-ticket', tags=['Ticketing'])
 async def ticketing_delete_ticket(data: ticketing_model.TicketingDeleteTicketParams):
-    await Ticketing.delete(data.delete_id)
-    return {
-        "status":True,
-        "message":"Ticket Deleted successfully",
-        "data":data.delete_id
-    }
+    tid = data.delete_id
+    params = urdhva_base.queryparams.QueryParams()
+    params.q = f"ticket_id = '{tid}'"
+    params.limit = 1
+    res = await Ticketing.get_all(params,resp_type='plain')
+
+    resp = res.get('data',[])
+    
+    if not resp:
+        return{
+            "status":False,
+            'message':"Ticket not found"
+        }
+    else:
+        await Ticketing.delete(id)
+        return {
+            "status":True,
+            "message":"Ticket Deleted successfully",
+            "data":id
+        }
 
 
 
@@ -280,10 +292,32 @@ async def ticketing_delete_file_attachment(data: ticketing_model.TicketingDelete
 
 
 
-# Action Attach_File
-@router.post('/attach-file', tags=['Ticketing'])
-async def ticketing_attach_file(data: ticketing_model.TicketingAttachFileParams):
-    ...
+
+# Action drag_card
+@router.post('/drag-card', tags=['Ticketing'])
+async def ticketing_drag_card(data: ticketing_model.TicketingDragCardParams):
+    tid = data.ticket_id
+    tdata = data.__dict__
+    params = urdhva_base.queryparams.QueryParams()
+    params.q = f"ticket_id = '{tid}'"
+    params.limit = 1
+
+    res = await Ticketing.get_all(params,resp_type='plain')
+
+    # tdata['ticket_status'] = tdata.status
+
+
+
+    # tdata['ticket_history'].append({
+    #       "action_msg": f"Ticket is updated, state changed to {}",
+    #       "action_type": "ToDo",
+    #       "description": "",
+    #       "allocated_time": "2025-11-10T22:52:53.720968",
+    #       "processed_time": "2025-11-10T22:52:53.720968"
+    # })
+    
+    print('>>>>>>>>>>>>',res)
+    return res
 
 
 # Action Attach_File
@@ -291,8 +325,43 @@ async def ticketing_attach_file(data: ticketing_model.TicketingAttachFileParams)
 async def ticketing_attach_file(data: ticketing_model.TicketingAttachFileParams):
     ...
 
-
-# Action Attach_File
-@router.post('/attach-file', tags=['Ticketing'])
-async def ticketing_attach_file(data: ticketing_model.TicketingAttachFileParams):
-    ...
+# {
+#     "status": true,
+#     "message": "Ticket updated successfully",
+#     "data": {
+#         "ticket_id": "253",
+#         "ticket_history": [
+#             {
+#                 "action_msg": "Ticket is created and is in InProgress state",
+#                 "action_type": "TicketInProgress",
+#                 "description": "<p>test</p>",
+#                 "allocated_time": "2025-10-28T08:24:34.208963",
+#                 "processed_time": "2025-10-28T08:24:34.208963"
+#             },
+#             {
+#                 "action_msg": "Ticket updated, state changed to Resolved",
+#                 "action_type": "TicketResolved",
+#                 "allocated_time": "2025-10-28T08:24:34.208963",
+#                 "processed_time": "2025-11-05T08:10:16.136231"
+#             },
+#             {
+#                 "action_msg": "Ticket updated, state changed to Cancelled",
+#                 "action_type": "TicketCancelled",
+#                 "allocated_time": "2025-11-05T08:10:16.136231",
+#                 "processed_time": "2025-11-09T13:15:26.266227"
+#             },
+#             {
+#                 "action_msg": "Ticket updated, state changed to Resolved",
+#                 "action_type": "TicketResolved",
+#                 "allocated_time": "2025-11-09T13:15:26.266227",
+#                 "processed_time": "2025-11-09T13:15:51.483194"
+#             },
+#             {
+#                 "action_msg": "Ticket updated, state changed to OnHold",
+#                 "action_type": "TicketOnHold",
+#                 "allocated_time": "2025-11-09T13:15:51.483194",
+#                 "processed_time": "2025-11-11T04:23:34.803043"
+#             }
+#         ]
+#     }
+# }

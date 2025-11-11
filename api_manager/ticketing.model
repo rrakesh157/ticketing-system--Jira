@@ -90,7 +90,6 @@ Model Ticketing {
 
     Action=> update_ticket {
 
-
         update_id str
 	    ticket_state State
 	    start_date optional datetime
@@ -116,6 +115,12 @@ Model Ticketing {
         ticket_id optional str
         tid optional str
         file_path optional str
+    }
+
+    Action=> drag_card {
+        ticket_id str
+        ticket_state State
+
     }
 
 
