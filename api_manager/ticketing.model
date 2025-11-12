@@ -48,6 +48,7 @@ Model Merge_History internal {
     action_type optional str
 }
 
+
 Model Ticketing {
 
     ticket_name optional str
@@ -110,12 +111,16 @@ Model Ticketing {
 
     }
 
-    Action=> Attach_File {
-
+    Action=> attach_file {
         ticket_id optional str
-        tid optional str
         file_path optional str
     }
+
+
+    Action=> delete_file_attachment {
+        ticket_id str
+    }
+
 
     Action=> drag_card {
         ticket_id str
@@ -123,12 +128,17 @@ Model Ticketing {
 
     }
 
-
-    Action=> delete_file_attachment{
+    
+    Action=> update_assignee{
         ticket_id str
+        assignee str
+
     }
 
-
+    Action=> update_reporter{
+        ticket_id str
+        reporter_name str
+    }
 
 
     Config=>{
@@ -136,3 +146,54 @@ Model Ticketing {
 
     }
 }
+
+
+Model BusinessUnit{
+    bu_name str
+    bu_short_name str
+    bu_id optional str
+
+    Action=>add_new_bu{
+        bu_name str
+        bu_short_name str
+    }
+
+    Config=>{
+        crud_operations='read'
+    }
+}
+
+
+Model Zone{
+    zone_name unique_field str
+    zone_short_name unique_field str
+    zone_id optional str
+
+    Action=>add_new_zone{
+        zone_name str
+        zone_short_name str
+    }
+
+    Config=>{
+        crud_operations='read'
+    }
+
+}
+
+Model Region{
+    region_name str
+    region_short_name str
+    region_id optional str
+
+    Action=> add_new_region{
+        region_name str
+        region_short_name str
+    }
+
+    Config=>{
+        crud_operations='read'
+    }
+
+}
+
+

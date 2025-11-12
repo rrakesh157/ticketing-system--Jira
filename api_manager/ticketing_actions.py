@@ -44,7 +44,7 @@ def generate_ticket_id():
 # Action create_ticket
 @router.post('/create-ticket', tags=['Ticketing'])
 async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketParams):
-    global t_id 
+    # global t_id 
     tdata = data.__dict__
     print("tdata--->",tdata)
 
@@ -105,17 +105,14 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
 async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketParams):
     data_dict = data.__dict__
     # print("data_dict-->",data_dict)
-    ticket_id = data_dict["update_id"]
+    ticket_id = data.update_id
 
     #checking wether ticket is there or not
     params = urdhva_base.queryparams.QueryParams()
-    params.q = f"ticket_id='{ticket_id}'"
+    params.q = f"id = {ticket_id}"
     params.limit = 1
-    params.fields = ["id","ticket_id","ticket_state"]
+    params.fields = ["id","ticket_history","ticket_state"]
     ticket_records = await Ticketing.get_all(params,resp_type='plain')
-
-    id = ticket_records.get("data")[0].get("id") if ticket_records.get("data") else None
-    print("id-->",id)
 
     print("ticket_records-->",ticket_records)
 
@@ -124,6 +121,7 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
     
     existing_ticket = ticket_records["data"][0]
 
+    
     procesed_time  = datetime.now()
     existing_history = existing_ticket.get("ticket_history",[]) or []
     last_allocated_time = procesed_time.isoformat()
@@ -138,6 +136,7 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
 
     ticket_state = data_dict.get("ticket_state") # "In Progress"
     action_type_enum = TicketType[ticket_state.name].value # ticketinprogress
+
     print("action_type_enum-->",action_type_enum)
 
      
@@ -147,18 +146,20 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
         "allocated-time":last_allocated_time,
         "proccessed_time":procesed_time.isoformat()
     }
-    updated_history = existing_history + [ticket_update_entry]
+    existing_history.append(ticket_update_entry)
 
-    print("updated_history-->",updated_history)
+    
 
     if ticket_state in ["Resolved", "Cancelled"]:
         data_dict["ticket_status"] = "Close"
     else:
         data_dict["ticket_status"] = "Open"
 
-    data_dict["ticket_history"] = updated_history
+    data_dict["ticket_history"] = existing_history
 
-    await Ticketing(id = id, **data_dict).modify()
+    # print("updated_history-->", data_dict["ticket_history"])
+
+    await Ticketing(id = ticket_id, **data_dict).modify()
 
     return {
         "status":True,
@@ -168,14 +169,11 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
 
 
 
-
-# Action Attach_File
+# Action attach_file
 @router.post('/attach-file', tags=['Ticketing'])
 async def ticketing_attach_file(
     ticket_id: Optional[str] = Form(None),
-    tid:Optional[str] = Form(None),
-    uploadfile: UploadFile = File(None)
-):
+    uploadfile: UploadFile = File(None)):
     
     # creating the directory if doesn't exist
     try:
@@ -192,10 +190,10 @@ async def ticketing_attach_file(
         
         print("File uploaded successfully at:",temp_file_path)
         print("ticket_id-->",ticket_id)
-        print("tid-->",tid)
+        
 
-        if ticket_id and tid:
-            query = f"ticket_id='{ticket_id}' and id = {tid}"
+        if ticket_id:
+            query = f"ticket_id='{ticket_id}'"
             params = urdhva_base.queryparams.QueryParams(q=query)
             result = await Ticketing.get_all(params,resp_type='plain')
             res = result.get("data",[])
@@ -227,26 +225,12 @@ async def ticketing_attach_file(
 # Action delete_ticket
 @router.post('/delete-ticket', tags=['Ticketing'])
 async def ticketing_delete_ticket(data: ticketing_model.TicketingDeleteTicketParams):
-    tid = data.delete_id
-    params = urdhva_base.queryparams.QueryParams()
-    params.q = f"ticket_id = '{tid}'"
-    params.limit = 1
-    res = await Ticketing.get_all(params,resp_type='plain')
-
-    resp = res.get('data',[])
-    
-    if not resp:
-        return{
-            "status":False,
-            'message':"Ticket not found"
-        }
-    else:
-        await Ticketing.delete(id)
-        return {
-            "status":True,
-            "message":"Ticket Deleted successfully",
-            "data":id
-        }
+    await Ticketing.delete(data.delete_id)
+    return {
+        "status":True,
+        "message":"Ticket Deleted successfully",
+        "data":id
+    }
 
 
 
@@ -291,77 +275,117 @@ async def ticketing_delete_file_attachment(data: ticketing_model.TicketingDelete
     }
 
 
+# Action update_assignee
+@router.post('/update-assignee', tags=['Ticketing'])
+async def ticketing_update_assignee(data: ticketing_model.TicketingUpdateAssigneeParams):
+    tdata = data.__dict__
+
+    params = urdhva_base.queryparams.QueryParams()
+    params.q = f"id={data.ticket_id}"
+    params.limit = 1
+    res = await Ticketing.get_all(params,resp_type='plain')
+
+    old_user = res.get('data')[0]['assignee']
+    new_user = data.assignee
+
+    print("old_user------>",res.get('data')[0]['assignee'])
+    print("new_user------>",data.assignee)
+
+    if old_user == new_user:
+        raise HTTPException(status_code=409,detail='User Already exist')
+    
+    await Ticketing(**{"id":data.ticket_id,"assignee":new_user}).modify()
+    return {
+        "status":True,
+        "message":f"User changed from {old_user} to {new_user}"
+    }
+
+
+
+# Action update_reporter
+@router.post('/update-reporter', tags=['Ticketing'])
+async def ticketing_update_reporter(data: ticketing_model.TicketingUpdateReporterParams):
+    tdata = data.__dict__
+
+    params = urdhva_base.queryparams.QueryParams()
+    params.q = f'id = {data.ticket_id}'
+    params.limit = 1
+    res = await Ticketing.get_all(params,resp_type='plain')
+
+    if not res.get('data'):
+        raise HTTPException(status_code=404,detail="Ticket not Found")
+
+    await Ticketing(**{"id":data.ticket_id,"created_by":data.reporter_name}).modify()
+    return {
+        'status':True,
+        'message':f"The reporter of {data.ticket_id} has changed to {data.reporter_name}"
+    }
+
+
 
 
 # Action drag_card
 @router.post('/drag-card', tags=['Ticketing'])
 async def ticketing_drag_card(data: ticketing_model.TicketingDragCardParams):
-    tid = data.ticket_id
-    tdata = data.__dict__
-    params = urdhva_base.queryparams.QueryParams()
-    params.q = f"ticket_id = '{tid}'"
-    params.limit = 1
-
-    res = await Ticketing.get_all(params,resp_type='plain')
-
-    # tdata['ticket_status'] = tdata.status
-
-
-
-    # tdata['ticket_history'].append({
-    #       "action_msg": f"Ticket is updated, state changed to {}",
-    #       "action_type": "ToDo",
-    #       "description": "",
-    #       "allocated_time": "2025-11-10T22:52:53.720968",
-    #       "processed_time": "2025-11-10T22:52:53.720968"
-    # })
-    
-    print('>>>>>>>>>>>>',res)
-    return res
-
-
-# Action Attach_File
-@router.post('/attach-file', tags=['Ticketing'])
-async def ticketing_attach_file(data: ticketing_model.TicketingAttachFileParams):
     ...
+#     tdata = data.__dict__
+#     ticket_id = data.ticket_id
+    
+#     params = urdhva_base.queryparams.QueryParams()
 
-# {
-#     "status": true,
-#     "message": "Ticket updated successfully",
-#     "data": {
-#         "ticket_id": "253",
-#         "ticket_history": [
-#             {
-#                 "action_msg": "Ticket is created and is in InProgress state",
-#                 "action_type": "TicketInProgress",
-#                 "description": "<p>test</p>",
-#                 "allocated_time": "2025-10-28T08:24:34.208963",
-#                 "processed_time": "2025-10-28T08:24:34.208963"
-#             },
-#             {
-#                 "action_msg": "Ticket updated, state changed to Resolved",
-#                 "action_type": "TicketResolved",
-#                 "allocated_time": "2025-10-28T08:24:34.208963",
-#                 "processed_time": "2025-11-05T08:10:16.136231"
-#             },
-#             {
-#                 "action_msg": "Ticket updated, state changed to Cancelled",
-#                 "action_type": "TicketCancelled",
-#                 "allocated_time": "2025-11-05T08:10:16.136231",
-#                 "processed_time": "2025-11-09T13:15:26.266227"
-#             },
-#             {
-#                 "action_msg": "Ticket updated, state changed to Resolved",
-#                 "action_type": "TicketResolved",
-#                 "allocated_time": "2025-11-09T13:15:26.266227",
-#                 "processed_time": "2025-11-09T13:15:51.483194"
-#             },
-#             {
-#                 "action_msg": "Ticket updated, state changed to OnHold",
-#                 "action_type": "TicketOnHold",
-#                 "allocated_time": "2025-11-09T13:15:51.483194",
-#                 "processed_time": "2025-11-11T04:23:34.803043"
-#             }
-#         ]
+#     params.q = f"id = {ticket_id}"
+
+#     params.limit = 1
+
+#     res = await Ticketing.get_all(params,resp_type='plain')
+
+#     print(ticket_id)
+
+#     return res
+
+#     resp = res.get('data')
+#     print('resp>>>>>>>>>',resp)
+    
+#     ticket_history = resp[0]['ticket_history']
+#     # history = tdata.get('ticket_history',[])
+
+#     print("<<<history>>>>",ticket_history)
+
+#     pd = resp[0]['ticket_history'][-1]['processed_time']
+    
+#     print("processed_time>>>>",pd)
+
+#     state = data.ticket_state.value
+#     action_type = TicketType[data.ticket_state.name].value
+       
+#     updated_history = {
+#           "action_msg": f"Ticket is updated, state changed to {state}",
+#           "action_type": action_type,
+#           "allocated_time": str(pd),
+#           "processed_time": datetime.now().isoformat()
 #     }
-# }
+
+#     ticket_history.append(updated_history)
+
+#     print("<<<updated_history>>>>",updated_history)
+
+#     # print(ticket_history)
+
+#     tdata.update({
+#         'ticket_id':data.ticket_id,
+#         'ticket_state': data.ticket_state,
+#         'ticket_history':ticket_history
+#         })
+
+
+#     await Ticketing(id=data.ticket_id,**tdata).modify()
+
+
+#     # print('>>>>>>>>>>>>',tdata)
+#     return {
+#         'status':True,
+#         'message':'Ticket Updated Successfully',
+#         'data':tdata
+#     }
+
+

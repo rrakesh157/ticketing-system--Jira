@@ -38,10 +38,16 @@
                     "name": "attach_file"
                 },
                 {
+                    "name": "delete_file_attachment"
+                },
+                {
                     "name": "drag_card"
                 },
                 {
-                    "name": "delete_file_attachment"
+                    "name": "update_assignee"
+                },
+                {
+                    "name": "update_reporter"
                 }
             ]
         },
@@ -95,10 +101,223 @@
                     "name": "attach_file"
                 },
                 {
+                    "name": "delete_file_attachment"
+                },
+                {
                     "name": "drag_card"
                 },
                 {
-                    "name": "delete_file_attachment"
+                    "name": "update_assignee"
+                },
+                {
+                    "name": "update_reporter"
+                }
+            ]
+        },
+        {
+            "name": "businessunit",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "BusinessUnit",
+            "attributes": {},
+            "uris": [
+                "/api/businessunit/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_new_bu"
+                }
+            ]
+        },
+        {
+            "name": "businessunit_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "BusinessUnit_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/businessunit/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "businessunit_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "BusinessUnit_admin",
+            "attributes": {},
+            "uris": [
+                "/api/businessunit/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_new_bu"
+                }
+            ]
+        },
+        {
+            "name": "zone",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Zone",
+            "attributes": {},
+            "uris": [
+                "/api/zone/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_new_zone"
+                }
+            ]
+        },
+        {
+            "name": "zone_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Zone_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/zone/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "zone_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Zone_admin",
+            "attributes": {},
+            "uris": [
+                "/api/zone/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_new_zone"
+                }
+            ]
+        },
+        {
+            "name": "region",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Region",
+            "attributes": {},
+            "uris": [
+                "/api/region/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_new_region"
+                }
+            ]
+        },
+        {
+            "name": "region_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Region_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/region/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "region_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Region_admin",
+            "attributes": {},
+            "uris": [
+                "/api/region/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_new_region"
                 }
             ]
         }
@@ -196,12 +415,32 @@
             "displayName": "attach_file"
         },
         {
+            "name": "delete_file_attachment",
+            "displayName": "delete_file_attachment"
+        },
+        {
             "name": "drag_card",
             "displayName": "drag_card"
         },
         {
-            "name": "delete_file_attachment",
-            "displayName": "delete_file_attachment"
+            "name": "update_assignee",
+            "displayName": "update_assignee"
+        },
+        {
+            "name": "update_reporter",
+            "displayName": "update_reporter"
+        },
+        {
+            "name": "add_new_bu",
+            "displayName": "add_new_bu"
+        },
+        {
+            "name": "add_new_zone",
+            "displayName": "add_new_zone"
+        },
+        {
+            "name": "add_new_region",
+            "displayName": "add_new_region"
         }
     ]
 }

@@ -190,17 +190,7 @@ class TicketingDeleteTicketParams(pydantic.BaseModel):
 
 class TicketingAttachFileParams(pydantic.BaseModel):
     ticket_id: typing.Optional[str] = pydantic.Field("", **{})
-    tid: typing.Optional[str] = pydantic.Field("", **{})
     file_path: typing.Optional[str] = pydantic.Field("", **{})
-
-    class Config:
-        if urdhva_base.settings.disable_api_extra_inputs:
-            extra = "forbid"  # Disallow extra fields
-
-
-class TicketingDragCardParams(pydantic.BaseModel):
-    ticket_id: str
-    status: ticketing_enum.State
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
@@ -209,6 +199,194 @@ class TicketingDragCardParams(pydantic.BaseModel):
 
 class TicketingDeleteFileAttachmentParams(pydantic.BaseModel):
     ticket_id: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketingDragCardParams(pydantic.BaseModel):
+    ticket_id: str
+    ticket_state: ticketing_enum.State
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketingUpdateAssigneeParams(pydantic.BaseModel):
+    ticket_id: str
+    assignee: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketingUpdateReporterParams(pydantic.BaseModel):
+    ticket_id: str
+    reporter_name: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class BusinessUnitSchema(UrdhvaPostgresBase):
+    __tablename__ = 'business_unit'
+    
+    bu_name: Mapped[str] = mapped_column("bu_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    bu_short_name: Mapped[str] = mapped_column("bu_short_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    bu_id: Mapped[typing.Optional[str]] = mapped_column("bu_id", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+
+
+class BusinessUnitCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'business_unit'
+    
+    bu_name: str
+    bu_short_name: str
+    bu_id: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = BusinessUnitSchema
+        upsert_keys = []
+
+
+class BusinessUnit(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'business_unit'
+    
+    bu_name: typing.Optional[str] | None = None
+    bu_short_name: typing.Optional[str] | None = None
+    bu_id: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = BusinessUnitSchema
+        upsert_keys = []
+
+
+class BusinessUnitGetResp(pydantic.BaseModel):
+    data: typing.List[BusinessUnit]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class BusinessunitAddNewBuParams(pydantic.BaseModel):
+    bu_name: str
+    bu_short_name: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class ZoneSchema(UrdhvaPostgresBase):
+    __tablename__ = 'zone'
+    
+    zone_name: Mapped[str] = mapped_column("zone_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    zone_short_name: Mapped[str] = mapped_column("zone_short_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    zone_id: Mapped[typing.Optional[str]] = mapped_column("zone_id", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+
+    __table_args__ = (UniqueConstraint(zone_name, zone_short_name, name="zone_zone_name_zone_short_name"),)
+
+
+class ZoneCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'zone'
+    
+    zone_name: str
+    zone_short_name: str
+    zone_id: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = ZoneSchema
+        upsert_keys = ['zone_name', 'zone_short_name']
+
+
+class Zone(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'zone'
+    
+    zone_name: typing.Optional[str] | None = None
+    zone_short_name: typing.Optional[str] | None = None
+    zone_id: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = ZoneSchema
+        upsert_keys = ['zone_name', 'zone_short_name']
+
+
+class ZoneGetResp(pydantic.BaseModel):
+    data: typing.List[Zone]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class ZoneAddNewZoneParams(pydantic.BaseModel):
+    zone_name: str
+    zone_short_name: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class RegionSchema(UrdhvaPostgresBase):
+    __tablename__ = 'region'
+    
+    region_name: Mapped[str] = mapped_column("region_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    region_short_name: Mapped[str] = mapped_column("region_short_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    region_id: Mapped[typing.Optional[str]] = mapped_column("region_id", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+
+
+class RegionCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'region'
+    
+    region_name: str
+    region_short_name: str
+    region_id: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = RegionSchema
+        upsert_keys = []
+
+
+class Region(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'region'
+    
+    region_name: typing.Optional[str] | None = None
+    region_short_name: typing.Optional[str] | None = None
+    region_id: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = RegionSchema
+        upsert_keys = []
+
+
+class RegionGetResp(pydantic.BaseModel):
+    data: typing.List[Region]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class RegionAddNewRegionParams(pydantic.BaseModel):
+    region_name: str
+    region_short_name: str
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
