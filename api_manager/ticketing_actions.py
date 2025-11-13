@@ -327,65 +327,71 @@ async def ticketing_update_reporter(data: ticketing_model.TicketingUpdateReporte
 # Action drag_card
 @router.post('/drag-card', tags=['Ticketing'])
 async def ticketing_drag_card(data: ticketing_model.TicketingDragCardParams):
-    ...
-#     tdata = data.__dict__
-#     ticket_id = data.ticket_id
+
+    tdata = data.__dict__
+    # ticket_id = data.ticket_id
     
-#     params = urdhva_base.queryparams.QueryParams()
+    params = urdhva_base.queryparams.QueryParams()
 
-#     params.q = f"id = {ticket_id}"
+    params.q = f"id = {data.ticket_id}"
 
-#     params.limit = 1
+    params.limit = 1
 
-#     res = await Ticketing.get_all(params,resp_type='plain')
+    res = await Ticketing.get_all(params,resp_type='plain')
 
-#     print(ticket_id)
+    print("res----------------->",res)
 
-#     return res
 
-#     resp = res.get('data')
-#     print('resp>>>>>>>>>',resp)
+
+    resp = res.get('data')
+    print('resp>>>>>>>>>',resp)
+
+    # return resp
     
-#     ticket_history = resp[0]['ticket_history']
-#     # history = tdata.get('ticket_history',[])
+    ticket_history = resp[0]['ticket_history']
+    # history = tdata.get('ticket_history',[])
 
-#     print("<<<history>>>>",ticket_history)
+    print("<<<history>>>>",ticket_history)
 
-#     pd = resp[0]['ticket_history'][-1]['processed_time']
+    pd = resp[0]['ticket_history'][-1]['processed_time']
     
-#     print("processed_time>>>>",pd)
+    print("processed_time>>>>",pd)
 
-#     state = data.ticket_state.value
-#     action_type = TicketType[data.ticket_state.name].value
+    state = data.ticket_state.value
+    action_type = TicketType[data.ticket_state.name].value
        
-#     updated_history = {
-#           "action_msg": f"Ticket is updated, state changed to {state}",
-#           "action_type": action_type,
-#           "allocated_time": str(pd),
-#           "processed_time": datetime.now().isoformat()
-#     }
+    updated_history = {
+          "action_msg": f"Ticket is updated, state changed to {state}",
+          "action_type": action_type,
+          "allocated_time": str(pd),
+          "processed_time": datetime.now().isoformat()
+    }
 
-#     ticket_history.append(updated_history)
+    ticket_history.append(updated_history)
 
-#     print("<<<updated_history>>>>",updated_history)
+    print("<<<updated_history>>>>",updated_history)
 
-#     # print(ticket_history)
+    # print(ticket_history)
 
-#     tdata.update({
-#         'ticket_id':data.ticket_id,
-#         'ticket_state': data.ticket_state,
-#         'ticket_history':ticket_history
-#         })
+    
+
+    tdata.update({
+        'ticket_state': data.ticket_state,
+        'ticket_history':ticket_history
+        })
+    print('>>>>>>>>>>>>',tdata)
+    
+    id = data.ticket_id
+
+    tdata.pop('ticket_id')
 
 
-#     await Ticketing(id=data.ticket_id,**tdata).modify()
+    await Ticketing(id=id,**tdata).modify()
 
-
-#     # print('>>>>>>>>>>>>',tdata)
-#     return {
-#         'status':True,
-#         'message':'Ticket Updated Successfully',
-#         'data':tdata
-#     }
+    return {
+        'status':True,
+        'message':'Ticket Updated Successfully',
+        'data':tdata
+    }
 
 

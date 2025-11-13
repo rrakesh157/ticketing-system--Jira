@@ -320,6 +320,87 @@
                     "name": "add_new_region"
                 }
             ]
+        },
+        {
+            "name": "masterdata",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "MasterData",
+            "attributes": {},
+            "uris": [
+                "/api/masterdata/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_new_data"
+                },
+                {
+                    "name": "update_data"
+                },
+                {
+                    "name": "delete_data"
+                }
+            ]
+        },
+        {
+            "name": "masterdata_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "MasterData_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/masterdata/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "masterdata_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "MasterData_admin",
+            "attributes": {},
+            "uris": [
+                "/api/masterdata/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_new_data"
+                },
+                {
+                    "name": "update_data"
+                },
+                {
+                    "name": "delete_data"
+                }
+            ]
         }
     ],
     "policies": [
@@ -441,6 +522,18 @@
         {
             "name": "add_new_region",
             "displayName": "add_new_region"
+        },
+        {
+            "name": "add_new_data",
+            "displayName": "add_new_data"
+        },
+        {
+            "name": "update_data",
+            "displayName": "update_data"
+        },
+        {
+            "name": "delete_data",
+            "displayName": "delete_data"
         }
     ]
 }

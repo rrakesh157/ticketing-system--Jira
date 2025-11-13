@@ -141,12 +141,12 @@ Model Ticketing {
     }
 
 
+
     Config=>{
         crud_operations='read'
 
     }
 }
-
 
 Model BusinessUnit{
     bu_name str
@@ -197,3 +197,30 @@ Model Region{
 }
 
 
+
+Model MasterData {
+    name str
+    description str
+    value unique_field str
+
+    Action=>add_new_data{
+        name str
+        description str
+        value str
+    }
+
+    Action=>update_data{
+        md_id str
+        name optional str
+        description optional str
+        value optional str
+    }
+
+    Action=>delete_data {
+        md_id str
+    }
+
+    Config=>{
+        crud_operations='read'
+    }
+}

@@ -391,3 +391,78 @@ class RegionAddNewRegionParams(pydantic.BaseModel):
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
+
+
+class MasterDataSchema(UrdhvaPostgresBase):
+    __tablename__ = 'master_data'
+    
+    name: Mapped[str] = mapped_column("name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    description: Mapped[str] = mapped_column("description", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    value: Mapped[str] = mapped_column("value", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+
+    __table_args__ = (UniqueConstraint(value, name="master_data_value"),)
+
+
+class MasterDataCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'master_data'
+    
+    name: str
+    description: str
+    value: str
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = MasterDataSchema
+        upsert_keys = ['value']
+
+
+class MasterData(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'master_data'
+    
+    name: typing.Optional[str] | None = None
+    description: typing.Optional[str] | None = None
+    value: typing.Optional[str] | None = None
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = MasterDataSchema
+        upsert_keys = ['value']
+
+
+class MasterDataGetResp(pydantic.BaseModel):
+    data: typing.List[MasterData]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class MasterdataAddNewDataParams(pydantic.BaseModel):
+    name: str
+    description: str
+    value: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class MasterdataUpdateDataParams(pydantic.BaseModel):
+    md_id: str
+    name: typing.Optional[str] = pydantic.Field("", **{})
+    description: typing.Optional[str] = pydantic.Field("", **{})
+    value: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class MasterdataDeleteDataParams(pydantic.BaseModel):
+    md_id: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
