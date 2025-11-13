@@ -82,7 +82,7 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
     print("ticket_state_str-->",ticket_state_str)
 
 
-    action_type_str = ticket_state_str.value # based on ticket state getting action type
+    action_type_str = TicketType[ticket_state_str.name].value # based on ticket state getting action type
     print("action_type_str-->",action_type_str)
 
     processed_time = datetime.now()
@@ -190,10 +190,18 @@ async def ticketing_attach_file(
         
         print("File uploaded successfully at:",temp_file_path)
         print("ticket_id-->",ticket_id)
-        
+
+
+        file_uuid = str(uuid.uuid4())
+
+        attachment_file = {
+            "file_attachment":[temp_file_path],
+            "file_attachment_name":uploadfile.filename,
+            "file_attachment_id":file_uuid
+        }
 
         if ticket_id:
-            query = f"ticket_id='{ticket_id}'"
+            query = f"id='{ticket_id}'"
             params = urdhva_base.queryparams.QueryParams(q=query)
             result = await Ticketing.get_all(params,resp_type='plain')
             res = result.get("data",[])
@@ -202,9 +210,12 @@ async def ticketing_attach_file(
                     "status":False,
                     "message":"Ticket not found"
                 }
-            await Ticketing(**{"id":res[0].get("id"),"file_attachment":[temp_file_path]}).modify()
+            await Ticketing(**{"id":ticket_id,**attachment_file}).modify()
 
-        file_uuid = str(uuid.uuid4())
+
+        else:
+            await Ticketing(**attachment_file).modify()
+
         return {
             "status":True,
             "message":f"File {uploadfile.filename} saved successfully",
@@ -272,53 +283,6 @@ async def ticketing_delete_file_attachment(data: ticketing_model.TicketingDelete
         "status":True,
         'message':'file attachment deleted',
         'data':ticket_id
-    }
-
-
-# Action update_assignee
-@router.post('/update-assignee', tags=['Ticketing'])
-async def ticketing_update_assignee(data: ticketing_model.TicketingUpdateAssigneeParams):
-    tdata = data.__dict__
-
-    params = urdhva_base.queryparams.QueryParams()
-    params.q = f"id={data.ticket_id}"
-    params.limit = 1
-    res = await Ticketing.get_all(params,resp_type='plain')
-
-    old_user = res.get('data')[0]['assignee']
-    new_user = data.assignee
-
-    print("old_user------>",res.get('data')[0]['assignee'])
-    print("new_user------>",data.assignee)
-
-    if old_user == new_user:
-        raise HTTPException(status_code=409,detail='User Already exist')
-    
-    await Ticketing(**{"id":data.ticket_id,"assignee":new_user}).modify()
-    return {
-        "status":True,
-        "message":f"User changed from {old_user} to {new_user}"
-    }
-
-
-
-# Action update_reporter
-@router.post('/update-reporter', tags=['Ticketing'])
-async def ticketing_update_reporter(data: ticketing_model.TicketingUpdateReporterParams):
-    tdata = data.__dict__
-
-    params = urdhva_base.queryparams.QueryParams()
-    params.q = f'id = {data.ticket_id}'
-    params.limit = 1
-    res = await Ticketing.get_all(params,resp_type='plain')
-
-    if not res.get('data'):
-        raise HTTPException(status_code=404,detail="Ticket not Found")
-
-    await Ticketing(**{"id":data.ticket_id,"created_by":data.reporter_name}).modify()
-    return {
-        'status':True,
-        'message':f"The reporter of {data.ticket_id} has changed to {data.reporter_name}"
     }
 
 
@@ -393,5 +357,92 @@ async def ticketing_drag_card(data: ticketing_model.TicketingDragCardParams):
         'message':'Ticket Updated Successfully',
         'data':tdata
     }
+
+
+
+# Action update_assignee
+@router.post('/update-assignee', tags=['Ticketing'])
+async def ticketing_update_assignee(data: ticketing_model.TicketingUpdateAssigneeParams):
+    tdata = data.__dict__
+
+    params = urdhva_base.queryparams.QueryParams()
+    params.q = f"id={data.ticket_id}"
+    params.limit = 1
+    res = await Ticketing.get_all(params,resp_type='plain')
+
+    old_user = res.get('data')[0]['assignee']
+    new_user = data.assignee
+
+    print("old_user------>",res.get('data')[0]['assignee'])
+    print("new_user------>",data.assignee)
+
+    if old_user == new_user:
+        raise HTTPException(status_code=409,detail='User Already exist')
+    
+    await Ticketing(**{"id":data.ticket_id,"assignee":new_user}).modify()
+    return {
+        "status":True,
+        "message":f"User changed from {old_user} to {new_user}"
+    }
+
+
+
+# Action update_reporter
+@router.post('/update-reporter', tags=['Ticketing'])
+async def ticketing_update_reporter(data: ticketing_model.TicketingUpdateReporterParams):
+    tdata = data.__dict__
+
+    params = urdhva_base.queryparams.QueryParams()
+    params.q = f'id = {data.ticket_id}'
+    params.limit = 1
+    res = await Ticketing.get_all(params,resp_type='plain')
+
+    if not res.get('data'):
+        raise HTTPException(status_code=404,detail="Ticket not Found")
+
+    await Ticketing(**{"id":data.ticket_id,"created_by":data.reporter_name}).modify()
+    return {
+        'status':True,
+        'message':f"The reporter of {data.ticket_id} has changed to {data.reporter_name}"
+    }
+
+
+
+
+
+# Action add_comment_to_ticket
+@router.post('/add-comment-to-ticket', tags=['Ticketing'])
+async def ticketing_add_comment_to_ticket(data: ticketing_model.TicketingAddCommentToTicketParams):
+    try:
+        tdata = data.__dict__
+        params = urdhva_base.queryparams.QueryParams()
+        params.q = f"id = '{data.ticket_id}'"
+        params.limit = 1
+
+        res = await Ticketing.get_all(params,resp_type='plain')
+
+        if not res or  len(res.get('data',[])) == 0:
+            raise HTTPException(status_code=404,detail="Ticket not found")
+        
+        # existing_comment = res.get('data')[0]['comment_text']
+
+        # print("existing_comment---->",existing_comment)
+
+        updated_comment = {
+            "id":data.ticket_id,
+            'comment_text':data.comment_text,
+            "comment_id":str(uuid.uuid4())
+        }
+
+        await Ticketing(**updated_comment).modify()
+
+        return {
+            "status":True,
+            "messege":"Comment added sucessfully"
+        }
+    except Exception as e:
+        return {
+            'error':str(e)
+        }
 
 

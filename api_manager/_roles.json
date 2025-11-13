@@ -48,6 +48,9 @@
                 },
                 {
                     "name": "update_reporter"
+                },
+                {
+                    "name": "add_comment_to_ticket"
                 }
             ]
         },
@@ -111,6 +114,9 @@
                 },
                 {
                     "name": "update_reporter"
+                },
+                {
+                    "name": "add_comment_to_ticket"
                 }
             ]
         },
@@ -510,6 +516,10 @@
         {
             "name": "update_reporter",
             "displayName": "update_reporter"
+        },
+        {
+            "name": "add_comment_to_ticket",
+            "displayName": "add_comment_to_ticket"
         },
         {
             "name": "add_new_bu",

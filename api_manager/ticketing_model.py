@@ -232,6 +232,15 @@ class TicketingUpdateReporterParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
+class TicketingAddCommentToTicketParams(pydantic.BaseModel):
+    ticket_id: str
+    comment_text: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
 class BusinessUnitSchema(UrdhvaPostgresBase):
     __tablename__ = 'business_unit'
     

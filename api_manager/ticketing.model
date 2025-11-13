@@ -20,13 +20,12 @@ Enum Severity str {
     Low='Low'
 }
 
-
 Enum TicketType str{
     ToDo = 'TicketRaised'
     InProgress = 'TicketInProgress'
     Cancelled = 'TicketCancelled'
     Resolved = 'TicketResolved'
-    OnHold = 'TicketOnHold'
+    OnHold = 'TicketOnHold'  
 }
 
 
@@ -140,6 +139,11 @@ Model Ticketing {
         reporter_name str
     }
 
+    Action=> add_comment_to_ticket{
+        ticket_id str
+        comment_text str
+    }
+
 
 
     Config=>{
@@ -224,3 +228,5 @@ Model MasterData {
         crud_operations='read'
     }
 }
+
+
