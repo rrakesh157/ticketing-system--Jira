@@ -144,6 +144,18 @@ Model Ticketing {
         comment_text str
     }
 
+    Action=> edit_comment {
+        ticket_id str
+        existing_comment_text str
+        comment_id str
+        new_comment str
+    }
+
+    Action=> delete_comment{
+        ticket_id str
+        comment_id str
+        existing_comment_text str
+    }
 
 
     Config=>{
@@ -151,22 +163,6 @@ Model Ticketing {
 
     }
 }
-
-Model BusinessUnit{
-    bu_name str
-    bu_short_name str
-    bu_id optional str
-
-    Action=>add_new_bu{
-        bu_name str
-        bu_short_name str
-    }
-
-    Config=>{
-        crud_operations='read'
-    }
-}
-
 
 Model Zone{
     zone_name unique_field str
@@ -229,4 +225,71 @@ Model MasterData {
     }
 }
 
+Model Workflow{
+
+    workflow_name unique_field str
+    created_by str
+
+    Action=> add_workflow{
+        workflow_name str
+        created_by str
+    }
+
+    
+
+    Config=>{
+        crud_operations='read'
+    }
+}
+
+
+Model Flow_Status internal{
+    workflow_id int
+    name str
+    order_no int
+    }
+
+
+Model WorkflowStatus{
+
+    workflow_id int
+    name str
+    order_no int
+    
+    Action=> add_workflow_status{
+
+        workflow_id int
+        name str
+        order_no int        
+        
+    }
+
+    Config=>{
+        foreign_keys='workflow_id=workflow.idint;instance_id=workflowstatus.workflow_id'
+        crud_operations='read'
+    }
+
+}
+
+Model Boards{
+
+    workflow_id int
+    board_name unique_field str
+    board_owner str
+
+    
+    Action=> add_board{
+
+        workflow_id int
+        board_name str
+        board_owner str
+    }
+
+
+    Config=>{
+        foreign_keys='workflow_id=workflow.idint;instance_id=boards.workflow_id'
+        crud_operations='read'
+    }
+    
+}
 

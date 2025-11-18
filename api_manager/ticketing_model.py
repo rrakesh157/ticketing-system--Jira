@@ -241,53 +241,21 @@ class TicketingAddCommentToTicketParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
-class BusinessUnitSchema(UrdhvaPostgresBase):
-    __tablename__ = 'business_unit'
-    
-    bu_name: Mapped[str] = mapped_column("bu_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
-    bu_short_name: Mapped[str] = mapped_column("bu_short_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
-    bu_id: Mapped[typing.Optional[str]] = mapped_column("bu_id", String, index=False, nullable=True, default="", primary_key=False, unique=False)
-
-
-class BusinessUnitCreate(urdhva_base.postgresmodel.BasePostgresModel):
-    __tablename__ = 'business_unit'
-    
-    bu_name: str
-    bu_short_name: str
-    bu_id: typing.Optional[str] = pydantic.Field("", **{})
+class TicketingEditCommentParams(pydantic.BaseModel):
+    ticket_id: str
+    existing_comment_text: str
+    comment_id: str
+    new_comment: str
 
     class Config:
-        collection_name = 'data_flow'
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
-        schema_class = BusinessUnitSchema
-        upsert_keys = []
 
 
-class BusinessUnit(urdhva_base.postgresmodel.PostgresModel):
-    __tablename__ = 'business_unit'
-    
-    bu_name: typing.Optional[str] | None = None
-    bu_short_name: typing.Optional[str] | None = None
-    bu_id: typing.Optional[str] = pydantic.Field("", **{})
-
-    class Config:
-        collection_name = 'data_flow'
-        if urdhva_base.settings.disable_api_extra_inputs:
-            extra = "forbid"  # Disallow extra fields
-        schema_class = BusinessUnitSchema
-        upsert_keys = []
-
-
-class BusinessUnitGetResp(pydantic.BaseModel):
-    data: typing.List[BusinessUnit]
-    total: int = pydantic.Field(0)
-    count: int = pydantic.Field(0)
-
-
-class BusinessunitAddNewBuParams(pydantic.BaseModel):
-    bu_name: str
-    bu_short_name: str
+class TicketingDeleteCommentParams(pydantic.BaseModel):
+    ticket_id: str
+    comment_id: str
+    existing_comment_text: str
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
@@ -471,6 +439,174 @@ class MasterdataUpdateDataParams(pydantic.BaseModel):
 
 class MasterdataDeleteDataParams(pydantic.BaseModel):
     md_id: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class WorkflowSchema(UrdhvaPostgresBase):
+    __tablename__ = 'workflow'
+    
+    workflow_name: Mapped[str] = mapped_column("workflow_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    created_by: Mapped[str] = mapped_column("created_by", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+
+    __table_args__ = (UniqueConstraint(workflow_name, name="workflow_workflow_name"),)
+
+
+class WorkflowCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'workflow'
+    
+    workflow_name: str
+    created_by: str
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = WorkflowSchema
+        upsert_keys = ['workflow_name']
+
+
+class Workflow(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'workflow'
+    
+    workflow_name: typing.Optional[str] | None = None
+    created_by: typing.Optional[str] | None = None
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = WorkflowSchema
+        upsert_keys = ['workflow_name']
+
+
+class WorkflowGetResp(pydantic.BaseModel):
+    data: typing.List[Workflow]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class WorkflowAddWorkflowParams(pydantic.BaseModel):
+    workflow_name: str
+    created_by: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class Flow_StatusCreate(pydantic.BaseModel):
+    workflow_id: int
+    name: str
+    order_no: int
+
+
+class WorkflowStatusSchema(UrdhvaPostgresBase):
+    __tablename__ = 'workflow_status'
+    
+    workflow_id: Mapped[int] = mapped_column("workflow_id", Integer, ForeignKey('workflow.idint;instance_id=workflowstatus.workflow_id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
+    name: Mapped[str] = mapped_column("name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    order_no: Mapped[int] = mapped_column("order_no", Integer, index=False, nullable=False, default=None, primary_key=False, unique=False)
+
+
+class WorkflowStatusCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'workflow_status'
+    
+    workflow_id: int
+    name: str
+    order_no: int
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = WorkflowStatusSchema
+        upsert_keys = []
+
+
+class WorkflowStatus(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'workflow_status'
+    
+    workflow_id: typing.Optional[int] | None = None
+    name: typing.Optional[str] | None = None
+    order_no: typing.Optional[int] | None = None
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = WorkflowStatusSchema
+        upsert_keys = []
+
+
+class WorkflowStatusGetResp(pydantic.BaseModel):
+    data: typing.List[WorkflowStatus]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class WorkflowstatusAddWorkflowStatusParams(pydantic.BaseModel):
+    workflow_id: int
+    name: str
+    order_no: int
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class BoardsSchema(UrdhvaPostgresBase):
+    __tablename__ = 'boards'
+    
+    workflow_id: Mapped[int] = mapped_column("workflow_id", Integer, ForeignKey('workflow.idint;instance_id=boards.workflow_id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
+    board_name: Mapped[str] = mapped_column("board_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    board_owner: Mapped[str] = mapped_column("board_owner", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+
+    __table_args__ = (UniqueConstraint(board_name, name="boards_board_name"),)
+
+
+class BoardsCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'boards'
+    
+    workflow_id: int
+    board_name: str
+    board_owner: str
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = BoardsSchema
+        upsert_keys = ['board_name']
+
+
+class Boards(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'boards'
+    
+    workflow_id: typing.Optional[int] | None = None
+    board_name: typing.Optional[str] | None = None
+    board_owner: typing.Optional[str] | None = None
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = BoardsSchema
+        upsert_keys = ['board_name']
+
+
+class BoardsGetResp(pydantic.BaseModel):
+    data: typing.List[Boards]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class BoardsAddBoardParams(pydantic.BaseModel):
+    workflow_id: int
+    board_name: str
+    board_owner: str
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:

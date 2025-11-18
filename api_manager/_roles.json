@@ -51,6 +51,12 @@
                 },
                 {
                     "name": "add_comment_to_ticket"
+                },
+                {
+                    "name": "edit_comment"
+                },
+                {
+                    "name": "delete_comment"
                 }
             ]
         },
@@ -117,75 +123,12 @@
                 },
                 {
                     "name": "add_comment_to_ticket"
-                }
-            ]
-        },
-        {
-            "name": "businessunit",
-            "type": "all",
-            "ownerManagedAccess": false,
-            "displayName": "BusinessUnit",
-            "attributes": {},
-            "uris": [
-                "/api/businessunit/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
                 },
                 {
-                    "name": "update"
+                    "name": "edit_comment"
                 },
                 {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_new_bu"
-                }
-            ]
-        },
-        {
-            "name": "businessunit_readOnly",
-            "type": "readOnly",
-            "ownerManagedAccess": false,
-            "displayName": "BusinessUnit_readOnly",
-            "attributes": {},
-            "uris": [
-                "/api/businessunit/*"
-            ],
-            "scopes": [
-                {
-                    "name": "read"
-                }
-            ]
-        },
-        {
-            "name": "businessunit_admin",
-            "type": "admin",
-            "ownerManagedAccess": false,
-            "displayName": "BusinessUnit_admin",
-            "attributes": {},
-            "uris": [
-                "/api/businessunit/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_new_bu"
+                    "name": "delete_comment"
                 }
             ]
         },
@@ -407,6 +350,213 @@
                     "name": "delete_data"
                 }
             ]
+        },
+        {
+            "name": "workflow",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Workflow",
+            "attributes": {},
+            "uris": [
+                "/api/workflow/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_workflow"
+                }
+            ]
+        },
+        {
+            "name": "workflow_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Workflow_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/workflow/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "workflow_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Workflow_admin",
+            "attributes": {},
+            "uris": [
+                "/api/workflow/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_workflow"
+                }
+            ]
+        },
+        {
+            "name": "workflowstatus",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "WorkflowStatus",
+            "attributes": {},
+            "uris": [
+                "/api/workflowstatus/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_workflow_status"
+                }
+            ]
+        },
+        {
+            "name": "workflowstatus_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "WorkflowStatus_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/workflowstatus/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "workflowstatus_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "WorkflowStatus_admin",
+            "attributes": {},
+            "uris": [
+                "/api/workflowstatus/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_workflow_status"
+                }
+            ]
+        },
+        {
+            "name": "boards",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Boards",
+            "attributes": {},
+            "uris": [
+                "/api/boards/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_board"
+                }
+            ]
+        },
+        {
+            "name": "boards_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Boards_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/boards/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "boards_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Boards_admin",
+            "attributes": {},
+            "uris": [
+                "/api/boards/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_board"
+                }
+            ]
         }
     ],
     "policies": [
@@ -522,8 +672,12 @@
             "displayName": "add_comment_to_ticket"
         },
         {
-            "name": "add_new_bu",
-            "displayName": "add_new_bu"
+            "name": "edit_comment",
+            "displayName": "edit_comment"
+        },
+        {
+            "name": "delete_comment",
+            "displayName": "delete_comment"
         },
         {
             "name": "add_new_zone",
@@ -544,6 +698,18 @@
         {
             "name": "delete_data",
             "displayName": "delete_data"
+        },
+        {
+            "name": "add_workflow",
+            "displayName": "add_workflow"
+        },
+        {
+            "name": "add_workflow_status",
+            "displayName": "add_workflow_status"
+        },
+        {
+            "name": "add_board",
+            "displayName": "add_board"
         }
     ]
 }

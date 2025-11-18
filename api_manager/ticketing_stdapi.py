@@ -17,16 +17,6 @@ async def get_all(response: Response, params=Depends(urdhva_base.queryparams.Que
     return await ticketing_model.Ticketing.get_all(params, skip_secrets=True)
 
 
-@router.get('/business-unit/{id}', response_model=ticketing_model.BusinessUnit, tags=['BusinessUnit'])
-async def get(id: str):
-    return await ticketing_model.BusinessUnit.get(id, skip_secrets=True)
-
-
-@router.get('/business-unit', response_model=ticketing_model.BusinessUnitGetResp, tags=['BusinessUnit'])
-async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
-    return await ticketing_model.BusinessUnit.get_all(params, skip_secrets=True)
-
-
 @router.get('/zone/{id}', response_model=ticketing_model.Zone, tags=['Zone'])
 async def get(id: str):
     return await ticketing_model.Zone.get(id, skip_secrets=True)
@@ -55,3 +45,33 @@ async def get(id: str):
 @router.get('/master-data', response_model=ticketing_model.MasterDataGetResp, tags=['MasterData'])
 async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
     return await ticketing_model.MasterData.get_all(params, skip_secrets=True)
+
+
+@router.get('/workflow/{id}', response_model=ticketing_model.Workflow, tags=['Workflow'])
+async def get(id: str):
+    return await ticketing_model.Workflow.get(id, skip_secrets=True)
+
+
+@router.get('/workflow', response_model=ticketing_model.WorkflowGetResp, tags=['Workflow'])
+async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
+    return await ticketing_model.Workflow.get_all(params, skip_secrets=True)
+
+
+@router.get('/workflow-status/{id}', response_model=ticketing_model.WorkflowStatus, tags=['WorkflowStatus'])
+async def get(id: str):
+    return await ticketing_model.WorkflowStatus.get(id, skip_secrets=True)
+
+
+@router.get('/workflow-status', response_model=ticketing_model.WorkflowStatusGetResp, tags=['WorkflowStatus'])
+async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
+    return await ticketing_model.WorkflowStatus.get_all(params, skip_secrets=True)
+
+
+@router.get('/boards/{id}', response_model=ticketing_model.Boards, tags=['Boards'])
+async def get(id: str):
+    return await ticketing_model.Boards.get(id, skip_secrets=True)
+
+
+@router.get('/boards', response_model=ticketing_model.BoardsGetResp, tags=['Boards'])
+async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
+    return await ticketing_model.Boards.get_all(params, skip_secrets=True)

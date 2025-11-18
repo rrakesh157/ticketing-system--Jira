@@ -14,7 +14,6 @@ router = APIRouter(prefix='/master-data')
 @router.post('/add-new-data', tags=['MasterData'])
 async def master_data_add_new_data(data: ticketing_model.MasterdataAddNewDataParams):
 
-    
     mdata = data.__dict__
 
     params = urdhva_base.queryparams.QueryParams()
@@ -24,7 +23,9 @@ async def master_data_add_new_data(data: ticketing_model.MasterdataAddNewDataPar
 
    
     if res.get('data'):
+
         print(">>>>>>>>>>",res)
+
         proj = res.get('data')[0]['name']
         val = res.get('data')[0]['value'] 
 
@@ -35,8 +36,6 @@ async def master_data_add_new_data(data: ticketing_model.MasterdataAddNewDataPar
         if res.get('data'):
             raise HTTPException(status_code=409,detail=f"{data.value} already give another name")
         
-
-
         params.q = f"name='{data.name}' and value='{data.value}"
         res1 = await MasterData.get_all(params,resp_type='plain')
         val1 = res1.get('data')[0]['value'] 
@@ -99,12 +98,9 @@ async def master_data_update_data(data: ticketing_model.MasterdataUpdateDataPara
                     "status":True,
                     'Message':f'Master Data {data.name} Updated successfully'
                 }
+    
     except Exception as e:
         return {'error':str(e)}
-    
-
-
-
 
 
 # Action delete_data
