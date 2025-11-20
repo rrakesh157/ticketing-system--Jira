@@ -1,8 +1,14 @@
 
+Enum TicketStatus str {
+    Open='Open'
+    Pending='Pending'
+    Done='Done'
+}
+
 Enum Status str {
     Open='Open'
-    Close='Close'
     Pending='Pending'
+    Done='Done'
 }
 
 Enum State str {
@@ -235,30 +241,44 @@ Model Workflow{
         created_by str
     }
 
+    Action=> update_workflow{
+
+        workflow_id str
+        workflow_name str
+        created_by str
+    }
+
+    Action=> delete_workflow {
+        workflow_id int
+    }
+
     Config=>{
         crud_operations='read'
     }
 }
 
+Model order internal{
+
+    ticket_state str
+    ticket_status str
+
+
+}
+
 Model WorkflowStatus{
 
     workflow_id int
-    name str
+    ticket_state str
+    ticket_status str
     order_no int
     
-    Action=> add_workflow_status{
-
-        workflow_id int
-        name str
-        order_no int        
-        
-    }
-
     Action=> update_order{
 
         workflow_id int
-        name list str
+        workflow_order list order
+        
     }
+
 
     Config=>{
         foreign_keys='workflow_id=workflow.id::int;instance_id=workflowstatus.workflow_id'
@@ -268,6 +288,7 @@ Model WorkflowStatus{
 }
 
 Model Boards{
+
 
     workflow_id int
     board_name unique_field str
@@ -279,6 +300,18 @@ Model Boards{
         workflow_id int
         board_name str
         board_owner str
+    }
+
+    Action=> update_board{
+
+        board_id str
+        workflow_id optional int
+        board_name optional str
+        board_owner optional str
+    }
+
+    Action=> delete_board{
+        board_id int
     }
 
 

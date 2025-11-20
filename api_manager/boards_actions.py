@@ -5,7 +5,7 @@ import ticketing_model
 import urdhva_base
 import pandas as pd
 from ticketing_model import Boards, BoardsCreate,Workflow,WorkflowStatus
-from fastapi import APIRouter, Response, Depends, UploadFile, File
+from fastapi import APIRouter, Response, Depends, UploadFile, File, HTTPException
 
 
 router = APIRouter(prefix='/boards')
@@ -26,10 +26,10 @@ async def get_all_boards(params=Depends(urdhva_base.queryparams.QueryParams)):
         
         res = await WorkflowStatus.get_all(params,resp_type='plain')
         df = pd.DataFrame(res['data'])
-        df = df[['name','workflow_id','order_no']]
+        df = df[['ticket_state','workflow_id','order_no']]
         workflow_df = (
                 df.sort_values("order_no")         
-                .groupby("workflow_id")["name"]
+                .groupby("workflow_id")["ticket_state"]
                 .agg(list)
                 .to_dict()
             )
@@ -43,10 +43,10 @@ async def get_all_boards(params=Depends(urdhva_base.queryparams.QueryParams)):
         print(boards_df)
         workflow_grouped = (
             df.sort_values("order_no")
-                    .groupby("workflow_id")["name"]
+                    .groupby("workflow_id")["ticket_state"]
                     .apply(list)
                     .reset_index()
-                    .rename(columns={"name": "workflow_status_list"})
+                    .rename(columns={"ticket_state": "workflow_status_list"})
         )
 
         result = boards_df.merge(workflow_grouped, on="workflow_id", how="left")
@@ -112,6 +112,73 @@ async def boards_add_board(data: ticketing_model.BoardsAddBoardParams):
         }
     
 
+    except Exception as e:
+        return {
+            'error':str(e)
+        }
+
+
+# Action delete_board
+@router.post('/delete-board', tags=['Boards'])
+async def boards_delete_board(data: ticketing_model.BoardsDeleteBoardParams):
+    
+    try:
+        params = urdhva_base.queryparams.QueryParams()
+        params.q = f"id='{data.board_id}'"
+        params.limit = 1
+
+        res = await Boards.get_all(params,resp_type='plain')
+        existing = res.get('data',[])
+        if not existing:
+            return {
+                "status":False,
+                "message":"Board not found"
+            } 
+        resp = await Boards.delete(data.board_id)
+        return {
+            "status":True,
+            "message":f"Board {data.board_id} is deleted"
+        }
+    except Exception as e:
+        return {
+            'error':str(e)
+        }
+
+
+# Action update_board
+@router.post('/update-board', tags=['Boards'])
+async def boards_update_board(data: ticketing_model.BoardsUpdateBoardParams):
+    try:
+        bdata = data.__dict__
+        params = urdhva_base.queryparams.QueryParams()
+        params.q = f"id='{data.board_id}'"
+        params.limit = 1
+
+        res = await Boards.get_all(params,resp_type='plain')
+        exisiting = res.get('data',[])
+        if not exisiting:
+            return {
+                "status":False,
+                "message":f"Board {data.board_id} doesnot exist"
+            }
+
+        params.q = f"id='{data.workflow_id}'"
+        chk_workflow = await Workflow.get_all(params,resp_type='plain')
+        
+        if not chk_workflow.get('data',[]):
+            raise HTTPException(status_code=404,detail="Workflow not found")
+        
+        bdata.update({
+            "board_name":data.board_name,
+            "board_owner":data.board_owner,
+            "workflow_id":data.workflow_id
+        })
+        await Boards(**{"id":data.board_id,**bdata}).modify()
+
+        return {
+            "status":True,
+            "message":"Board data updated successfully"
+        }
     except Exception as e:
         return {
             'error':str(e)

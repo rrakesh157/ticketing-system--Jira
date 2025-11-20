@@ -497,11 +497,35 @@ class WorkflowAddWorkflowParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
+class WorkflowUpdateWorkflowParams(pydantic.BaseModel):
+    workflow_id: str
+    workflow_name: str
+    created_by: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class WorkflowDeleteWorkflowParams(pydantic.BaseModel):
+    workflow_id: int
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class orderCreate(pydantic.BaseModel):
+    ticket_state: str
+    ticket_status: str
+
+
 class WorkflowStatusSchema(UrdhvaPostgresBase):
     __tablename__ = 'workflow_status'
     
     workflow_id: Mapped[int] = mapped_column("workflow_id", Integer, ForeignKey('workflow.id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
-    name: Mapped[str] = mapped_column("name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    ticket_state: Mapped[str] = mapped_column("ticket_state", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    ticket_status: Mapped[str] = mapped_column("ticket_status", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
     order_no: Mapped[int] = mapped_column("order_no", Integer, index=False, nullable=False, default=None, primary_key=False, unique=False)
 
 
@@ -509,7 +533,8 @@ class WorkflowStatusCreate(urdhva_base.postgresmodel.BasePostgresModel):
     __tablename__ = 'workflow_status'
     
     workflow_id: int
-    name: str
+    ticket_state: str
+    ticket_status: str
     order_no: int
 
     class Config:
@@ -524,7 +549,8 @@ class WorkflowStatus(urdhva_base.postgresmodel.PostgresModel):
     __tablename__ = 'workflow_status'
     
     workflow_id: typing.Optional[int] | None = None
-    name: typing.Optional[str] | None = None
+    ticket_state: typing.Optional[str] | None = None
+    ticket_status: typing.Optional[str] | None = None
     order_no: typing.Optional[int] | None = None
 
     class Config:
@@ -541,19 +567,9 @@ class WorkflowStatusGetResp(pydantic.BaseModel):
     count: int = pydantic.Field(0)
 
 
-class WorkflowstatusAddWorkflowStatusParams(pydantic.BaseModel):
-    workflow_id: int
-    name: str
-    order_no: int
-
-    class Config:
-        if urdhva_base.settings.disable_api_extra_inputs:
-            extra = "forbid"  # Disallow extra fields
-
-
 class WorkflowstatusUpdateOrderParams(pydantic.BaseModel):
     workflow_id: int
-    name: typing.List[str]
+    workflow_order: typing.List[orderCreate]
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
@@ -610,6 +626,25 @@ class BoardsAddBoardParams(pydantic.BaseModel):
     workflow_id: int
     board_name: str
     board_owner: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class BoardsUpdateBoardParams(pydantic.BaseModel):
+    board_id: str
+    workflow_id: typing.Optional[int] = pydantic.Field(0, **{})
+    board_name: typing.Optional[str] = pydantic.Field("", **{})
+    board_owner: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class BoardsDeleteBoardParams(pydantic.BaseModel):
+    board_id: int
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:

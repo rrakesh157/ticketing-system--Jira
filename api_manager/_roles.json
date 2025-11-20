@@ -375,6 +375,12 @@
                 },
                 {
                     "name": "add_workflow"
+                },
+                {
+                    "name": "update_workflow"
+                },
+                {
+                    "name": "delete_workflow"
                 }
             ]
         },
@@ -417,6 +423,12 @@
                 },
                 {
                     "name": "add_workflow"
+                },
+                {
+                    "name": "update_workflow"
+                },
+                {
+                    "name": "delete_workflow"
                 }
             ]
         },
@@ -441,9 +453,6 @@
                 },
                 {
                     "name": "delete"
-                },
-                {
-                    "name": "add_workflow_status"
                 },
                 {
                     "name": "update_order"
@@ -488,9 +497,6 @@
                     "name": "delete"
                 },
                 {
-                    "name": "add_workflow_status"
-                },
-                {
                     "name": "update_order"
                 }
             ]
@@ -519,6 +525,12 @@
                 },
                 {
                     "name": "add_board"
+                },
+                {
+                    "name": "update_board"
+                },
+                {
+                    "name": "delete_board"
                 }
             ]
         },
@@ -561,6 +573,12 @@
                 },
                 {
                     "name": "add_board"
+                },
+                {
+                    "name": "update_board"
+                },
+                {
+                    "name": "delete_board"
                 }
             ]
         }
@@ -710,8 +728,12 @@
             "displayName": "add_workflow"
         },
         {
-            "name": "add_workflow_status",
-            "displayName": "add_workflow_status"
+            "name": "update_workflow",
+            "displayName": "update_workflow"
+        },
+        {
+            "name": "delete_workflow",
+            "displayName": "delete_workflow"
         },
         {
             "name": "update_order",
@@ -720,6 +742,14 @@
         {
             "name": "add_board",
             "displayName": "add_board"
+        },
+        {
+            "name": "update_board",
+            "displayName": "update_board"
+        },
+        {
+            "name": "delete_board",
+            "displayName": "delete_board"
         }
     ]
 }
