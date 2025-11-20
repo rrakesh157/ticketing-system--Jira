@@ -444,6 +444,9 @@
                 },
                 {
                     "name": "add_workflow_status"
+                },
+                {
+                    "name": "update_order"
                 }
             ]
         },
@@ -486,6 +489,9 @@
                 },
                 {
                     "name": "add_workflow_status"
+                },
+                {
+                    "name": "update_order"
                 }
             ]
         },
@@ -706,6 +712,10 @@
         {
             "name": "add_workflow_status",
             "displayName": "add_workflow_status"
+        },
+        {
+            "name": "update_order",
+            "displayName": "update_order"
         },
         {
             "name": "add_board",

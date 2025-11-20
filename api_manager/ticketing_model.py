@@ -497,16 +497,10 @@ class WorkflowAddWorkflowParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
-class Flow_StatusCreate(pydantic.BaseModel):
-    workflow_id: int
-    name: str
-    order_no: int
-
-
 class WorkflowStatusSchema(UrdhvaPostgresBase):
     __tablename__ = 'workflow_status'
     
-    workflow_id: Mapped[int] = mapped_column("workflow_id", Integer, ForeignKey('workflow.idint;instance_id=workflowstatus.workflow_id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
+    workflow_id: Mapped[int] = mapped_column("workflow_id", Integer, ForeignKey('workflow.id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
     name: Mapped[str] = mapped_column("name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
     order_no: Mapped[int] = mapped_column("order_no", Integer, index=False, nullable=False, default=None, primary_key=False, unique=False)
 
@@ -557,10 +551,19 @@ class WorkflowstatusAddWorkflowStatusParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
+class WorkflowstatusUpdateOrderParams(pydantic.BaseModel):
+    workflow_id: int
+    name: typing.List[str]
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
 class BoardsSchema(UrdhvaPostgresBase):
     __tablename__ = 'boards'
     
-    workflow_id: Mapped[int] = mapped_column("workflow_id", Integer, ForeignKey('workflow.idint;instance_id=boards.workflow_id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
+    workflow_id: Mapped[int] = mapped_column("workflow_id", Integer, ForeignKey('workflow.id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
     board_name: Mapped[str] = mapped_column("board_name", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
     board_owner: Mapped[str] = mapped_column("board_owner", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
 

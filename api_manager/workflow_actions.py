@@ -27,11 +27,16 @@ async def workflow_add_workflow(data: ticketing_model.WorkflowAddWorkflowParams)
                 "workflow_name":data.workflow_name.lower(),
                 "created_by":data.created_by
             })
-            await WorkflowCreate(**wdata).create()
+            resp = await WorkflowCreate(**wdata).create()
+
+            print(resp)
             return {
                 'status':True,
-                'messege':f"Workflow name {data.workflow_name.lower()} is created"
+                'messege':f"{data.workflow_name.lower()} is created",
+                'workflow_id':resp.get("id"),
+                'workflow_name':resp.get("workflow_name")
             }
+        
         else:
            return {
                 'status':False,
