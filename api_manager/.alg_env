@@ -1,3 +1,0 @@
-db_urls={"postgres_async": ["postgresql+asyncpg://localhost:5432/fastapi?user=postgres&password=nani157"] ,"redis": ["redis://localhost:6379"]}
-#import_paths={"base_path": "/Users/algofusion/Documents/GitHub/pipeline_backend_v1","api_manager": "/Users/algofusion/Documents/GitHub/pipeline_backend_v1/api_manager"}
-import_paths={"base_path": "C:\\Users\\Rakesh\\OneDrive\\Desktop\\AlgoFusion\\ticketing-system--Jira", "api_manager": "C:\\Users\\Rakesh\\OneDrive\\Desktop\\AlgoFusion\\ticketing-system--Jira\\api_manager"}
