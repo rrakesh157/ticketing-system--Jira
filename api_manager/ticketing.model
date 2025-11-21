@@ -340,9 +340,10 @@ Model Users {
     }
 
     Action=> user_sign_up{
-        
+
         first_name optional str
         last_name optional str
+        email str
         password str
         phone_number optional str
     }

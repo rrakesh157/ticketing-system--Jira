@@ -606,6 +606,9 @@
                 },
                 {
                     "name": "add_user"
+                },
+                {
+                    "name": "user_sign_up"
                 }
             ]
         },
@@ -648,6 +651,9 @@
                 },
                 {
                     "name": "add_user"
+                },
+                {
+                    "name": "user_sign_up"
                 }
             ]
         }
@@ -823,6 +829,10 @@
         {
             "name": "add_user",
             "displayName": "add_user"
+        },
+        {
+            "name": "user_sign_up",
+            "displayName": "user_sign_up"
         }
     ]
 }

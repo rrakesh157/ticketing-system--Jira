@@ -719,3 +719,15 @@ class UsersAddUserParams(pydantic.BaseModel):
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
+
+
+class UsersUserSignUpParams(pydantic.BaseModel):
+    first_name: typing.Optional[str] = pydantic.Field("", **{})
+    last_name: typing.Optional[str] = pydantic.Field("", **{})
+    email: str
+    password: str
+    phone_number: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
