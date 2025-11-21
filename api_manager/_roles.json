@@ -581,6 +581,75 @@
                     "name": "delete_board"
                 }
             ]
+        },
+        {
+            "name": "users",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Users",
+            "attributes": {},
+            "uris": [
+                "/api/users/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_user"
+                }
+            ]
+        },
+        {
+            "name": "users_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Users_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/users/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "users_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Users_admin",
+            "attributes": {},
+            "uris": [
+                "/api/users/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_user"
+                }
+            ]
         }
     ],
     "policies": [
@@ -750,6 +819,10 @@
         {
             "name": "delete_board",
             "displayName": "delete_board"
+        },
+        {
+            "name": "add_user",
+            "displayName": "add_user"
         }
     ]
 }

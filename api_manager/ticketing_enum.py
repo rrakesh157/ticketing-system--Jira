@@ -10,7 +10,7 @@ class TicketStatus(str, enum.Enum):
 class Status(str, enum.Enum):
     OPEN = 'Open'
     PENDING = 'Pending'
-    DONE = 'Done'
+    CLOSE = 'Close'
 
 
 class State(str, enum.Enum):

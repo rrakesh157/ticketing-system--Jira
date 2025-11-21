@@ -8,7 +8,7 @@ Enum TicketStatus str {
 Enum Status str {
     Open='Open'
     Pending='Pending'
-    Done='Done'
+    Close='Close'
 }
 
 Enum State str {
@@ -320,5 +320,36 @@ Model Boards{
         crud_operations='read'
     }
     
+}
+
+Model Users {
+
+    user_id optional str
+    first_name optional str
+    last_name optional str
+    email unique_field str
+    password str
+    phone_number optional str
+    role str
+    is_active bool
+
+
+    Action=> add_user{
+        email list str
+        role str
+    }
+
+    Action=> user_sign_up{
+        
+        first_name optional str
+        last_name optional str
+        password str
+        phone_number optional str
+    }
+
+    Config=>{
+        crud_operations='read'
+    }
+
 }
 

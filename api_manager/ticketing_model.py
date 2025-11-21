@@ -649,3 +649,73 @@ class BoardsDeleteBoardParams(pydantic.BaseModel):
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
+
+
+class UsersSchema(UrdhvaPostgresBase):
+    __tablename__ = 'users'
+    
+    user_id: Mapped[typing.Optional[str]] = mapped_column("user_id", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+    first_name: Mapped[typing.Optional[str]] = mapped_column("first_name", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+    last_name: Mapped[typing.Optional[str]] = mapped_column("last_name", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+    email: Mapped[str] = mapped_column("email", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    password: Mapped[str] = mapped_column("password", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    phone_number: Mapped[typing.Optional[str]] = mapped_column("phone_number", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+    role: Mapped[str] = mapped_column("role", String, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    is_active: Mapped[bool] = mapped_column("is_active", Boolean, index=False, nullable=False, default=None, primary_key=False, unique=False)
+
+    __table_args__ = (UniqueConstraint(email, name="users_email"),)
+
+
+class UsersCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'users'
+    
+    user_id: typing.Optional[str] = pydantic.Field("", **{})
+    first_name: typing.Optional[str] = pydantic.Field("", **{})
+    last_name: typing.Optional[str] = pydantic.Field("", **{})
+    email: str
+    password: str
+    phone_number: typing.Optional[str] = pydantic.Field("", **{})
+    role: str
+    is_active: bool
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = UsersSchema
+        upsert_keys = ['email']
+
+
+class Users(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'users'
+    
+    user_id: typing.Optional[str] = pydantic.Field("", **{})
+    first_name: typing.Optional[str] = pydantic.Field("", **{})
+    last_name: typing.Optional[str] = pydantic.Field("", **{})
+    email: typing.Optional[str] | None = None
+    password: typing.Optional[str] | None = None
+    phone_number: typing.Optional[str] = pydantic.Field("", **{})
+    role: typing.Optional[str] | None = None
+    is_active: typing.Optional[bool] | None = None
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = UsersSchema
+        upsert_keys = ['email']
+
+
+class UsersGetResp(pydantic.BaseModel):
+    data: typing.List[Users]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class UsersAddUserParams(pydantic.BaseModel):
+    email: typing.List[str]
+    role: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
