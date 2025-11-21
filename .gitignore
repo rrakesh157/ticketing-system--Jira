@@ -3,8 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+ticketing-system--jira/api_manager/.alg_env
 
-api_manager/.alg_env
+
+UrdhvaBase/
 
 # --- Virtual Environments ---
 env/

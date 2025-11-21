@@ -13,40 +13,41 @@ router = APIRouter(prefix='/workflow')
 @router.post('/add-workflow', tags=['Workflow'])
 async def workflow_add_workflow(data: ticketing_model.WorkflowAddWorkflowParams):
     try:
-        wdata = data.__dict__
+        wdata = data.model_dump()
         params = urdhva_base.queryparams.QueryParams()
         params.q = f"workflow_name='{data.workflow_name.lower()}'"
         params.limit = 1
-        res = await Workflow.get_all(params,resp_type='plain')
+        exisiting = await Workflow.get_all(params,resp_type='plain')
 
-        print(res)
-        print('.>>>>',len(res.get('data',[])))
+        exisiting = exisiting.get("data",[])
+        print(exisiting)
 
-        if not res or len(res.get('data',[])) == 0:
-            wdata.update({
-                "workflow_name":data.workflow_name.lower(),
-                "created_by":data.created_by
-            })
-            resp = await WorkflowCreate(**wdata).create()
-
-            print(resp)
+        if exisiting:
             return {
-                'status':True,
-                'messege':f"{data.workflow_name.lower()} is created",
-                'workflow_id':resp.get("id"),
-                'workflow_name':resp.get("workflow_name")
+                "status":False,
+                "message":f"Workflow {data.workflow_name} already exists"
             }
-        
-        else:
-           return {
-                'status':False,
-                'messege':f"Workflow name {data.workflow_name.lower()} already exist"
-            } 
-        
-    except Exception as e:
+
+        wdata.update({
+            "workflow_name":data.workflow_name.lower(),
+            "created_by":data.created_by
+        })
+        resp = await WorkflowCreate(**wdata).create()
+
+        print(resp)
         return {
-            'error':str(e)
+            'status':True,
+            'messege':f"{data.workflow_name.lower()} is created successfully",
+            'workflow_id':resp.get("id"),
+            'workflow_name':resp.get("workflow_name")
         }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="something went wrong while creating workflow"
+        )
 
 #if work flow is deleted then its related status and board get effected
 
@@ -63,7 +64,7 @@ async def workflow_delete_workflow(data: ticketing_model.WorkflowDeleteWorkflowP
         if not existing:
             return {
                 "status":False,
-                "message":"workflow not found"
+                "message":f"{data.workflow_id} not found"
             } 
         board_data = await Boards.get_all(params,resp_type='plain')
         # WorkflowStatus_data = await WorkflowStatus.get_all(params,resp_type='plain')
@@ -93,10 +94,13 @@ async def workflow_delete_workflow(data: ticketing_model.WorkflowDeleteWorkflowP
                 "status":False,
                 'message':f"workflow {data.workflow_id} cannot delete since it used in boards"
             }
+    except HTTPException:
+        raise
     except Exception as e:
-        return {
-            'error':str(e)
-        }
+        raise HTTPException(
+            status_code=500,
+            detail="something went wrong while creating workflow"
+        )
 
 
 # Action update_workflow

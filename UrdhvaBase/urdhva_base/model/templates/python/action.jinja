@@ -1,0 +1,6 @@
+
+# Action {{input.name}}
+@router.post('/{{to_kebab_case(input.name.replace('_', '-'))}}', tags=['{{input.parent.name}}'])
+async def {{convert_snake_case(input.parent.name)}}_{{input.name.lower()}}(data: {{input.parent.fbase}}_model.{{input.parent.name.title()}}{{input.name.title().replace('_', '')}}Params):
+    ...
+

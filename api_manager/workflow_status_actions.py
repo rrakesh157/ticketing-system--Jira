@@ -11,8 +11,6 @@ from fastapi import APIRouter
 router = APIRouter(prefix='/workflow-status')
 
 
-
-
 @router.get('/workflow-status/', tags=['WorkflowStatus']) # Get api To get default workflow status
 def get_statuses():
     return {"workflow":["todo","inprogress","cancelled","resolved","onhold"],

@@ -1,0 +1,5 @@
+import {{input.parent.fbase}}_enum
+import {{input.parent.fbase}}_model
+from fastapi import APIRouter
+
+router = APIRouter(prefix='/{{to_kebab_case(input.parent.parent.name)}}')
