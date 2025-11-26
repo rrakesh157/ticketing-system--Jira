@@ -1,12 +1,6 @@
 import enum
 
 
-class TicketStatus(str, enum.Enum):
-    OPEN = 'Open'
-    PENDING = 'Pending'
-    DONE = 'Done'
-
-
 class Status(str, enum.Enum):
     OPEN = 'Open'
     PENDING = 'Pending'

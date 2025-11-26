@@ -2,7 +2,6 @@ import urdhva_base
 import traceback
 import os, uuid
 import api_manager
-import random
 import uuid
 from ticketing_enum import TicketType, Status, State
 from dateutil import parser
@@ -106,76 +105,6 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
         }    
 
 
-# Action update_ticket
-@router.post('/update-ticket', tags=['Ticketing'])
-async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketParams):
-    try:
-        data_dict = data.__dict__
-        # print("data_dict-->",data_dict)
-        ticket_id = data.update_id
-
-        #checking wether ticket is there or not
-        params = urdhva_base.queryparams.QueryParams()
-        params.q = f"id = {ticket_id}"
-        params.limit = 1
-        params.fields = ["id","ticket_history","ticket_state"]
-        res = await Ticketing.get_all(params,resp_type='plain')
-
-        # print("ticket_records-->",ticket_records)
-
-        if not res or not res.get("data"):
-            return {"status":False,"message":f"Ticket '{ticket_id}'not found"}
-        
-
-        resp = res.get('data',[])
-        print('resp>>>>>>>>>',resp)
-        
-        ticket_history = resp[0]['ticket_history']
-        print("<<<history>>>>",ticket_history)
-
-        pd = resp[0]['ticket_history'][-1]['processed_time']
-        print("processed_time>>>>",pd)
-
-        state = data_dict.get("ticket_state")
-
-        action_type = TicketType[state.name].value # ticketinprogress
-        old_action_type = resp[0]['ticket_history'][-1]['action_type']
-
-        if action_type != old_action_type:  # donot update ticket_history if state is not changed
-
-            updated_history = {
-                "action_msg": f"Ticket is updated, state changed to {action_type} state",
-                "action_type": action_type,
-                "allocated_time": str(pd),
-                "processed_time": datetime.now().isoformat()
-            }
-
-            ticket_history.append(updated_history)
-            print("<<<updated_history>>>>",updated_history)
-
-            if state in ["Resolved", "Cancelled"]:
-                data_dict["ticket_status"] = "Close"
-            
-            else:
-                data_dict["ticket_status"] = "Pending"
-
-            data_dict["ticket_history"] = ticket_history
-
-        # print("updated_history-->", data_dict["ticket_history"])
-
-        await Ticketing(id = ticket_id, **data_dict).modify()
-
-        return {
-            "status":True,
-            "message":f"Ticket {ticket_id} updated successfully",
-            "updated_fields":data_dict
-        }
-    except Exception as e :
-        return {
-            'error':f"Error in updating ticket at {str(e)}"
-        }
-
-
 
 # Action attach_file
 @router.post('/attach-file', tags=['Ticketing'])
@@ -207,13 +136,16 @@ async def ticketing_attach_file(
             "file_attachment_name":uploadfile.filename,
             "file_attachment_id":file_uuid
         }
+        print("attachment_file>>>",attachment_file)
 
         if ticket_id:
             params = urdhva_base.queryparams.QueryParams()
-            params.q = f"ticket_id='{ticket_id}'"
+            params.q = f"id='{ticket_id}'"
             params.limit = 1
             result = await Ticketing.get_all(params,resp_type='plain')
             res = result.get("data",[])
+
+            print("res>>>",res)
             if not res:
                 return {
                     "status":False,
@@ -225,6 +157,7 @@ async def ticketing_attach_file(
 
             
             await Ticketing(**{"id":id,**attachment_file}).modify()
+        print("not entering")
 
 
         return {
@@ -244,207 +177,32 @@ async def ticketing_attach_file(
 
 
 
-# Action delete_ticket
-@router.post('/delete-ticket', tags=['Ticketing'])
-async def ticketing_delete_ticket(data: ticketing_model.TicketingDeleteTicketParams):
-    await Ticketing.delete(data.delete_id)
-    return {
-        "status":True,
-        "message":"Ticket Deleted successfully",
-        "data":id
-    }
 
-
-# Action delete_file_attachment
-@router.post('/delete-file-attachment', tags=['Ticketing'])
-async def ticketing_delete_file_attachment(data: ticketing_model.TicketingDeleteFileAttachmentParams):
-
-    #To fetch the ticket
-    params = urdhva_base.queryparams.QueryParams()
-    params.q = f"id = '{data.ticket_id}'"
-    params.limit = 1
-
-    res = await Ticketing.get_all(params,resp_type='plain')
-
-    if not res or len(res.get("data",[])) == 0:
-        raise HTTPException(status_code=404, detail="Ticket not Found")
-    
-    print(">>>>>>>>>>>>>>>>",res)
-    
-    db_record = res["data"][0]
-
-    file_list = db_record.get('file_attachment') or []
-
-    for file_path in file_list:
-        if file_path and os.path.exists(file_path):
-            os.remove(file_path)
-
-
-    update_payload = {
-        "file_attachment" : [""],
-        "file_attachment_name":"",
-        "file_attachment_id":""
-    }
-
-    await Ticketing(**{"id":data.ticket_id,**update_payload}).modify()
-    return {
-        "status":True,
-        'message':'file attachment deleted',
-        'data':data.ticket_id
-    }
-
-
-# Action update_assignee
-@router.post('/update-assignee', tags=['Ticketing'])
-async def ticketing_update_assignee(data: ticketing_model.TicketingUpdateAssigneeParams):
-    tdata = data.__dict__
-
-    params = urdhva_base.queryparams.QueryParams()
-    params.q = f"id={data.ticket_id}"
-    params.limit = 1
-    res = await Ticketing.get_all(params,resp_type='plain')
-
-    old_user = res.get('data')[0]['assignee']
-    new_user = data.assignee
-
-    print("old_user------>",res.get('data')[0]['assignee'])
-    print("new_user------>",data.assignee)
-
-    if old_user == new_user:
-        raise HTTPException(status_code=409,detail='User Already exist')
-    
-    await Ticketing(**{"id":data.ticket_id,"assignee":new_user}).modify()
-    return {
-        "status":True,
-        "message":f"User changed from {old_user} to {new_user}"
-    }
-
-
-
-# Action update_reporter
-@router.post('/update-reporter', tags=['Ticketing'])
-async def ticketing_update_reporter(data: ticketing_model.TicketingUpdateReporterParams):
-
-    tdata = data.__dict__
-    params = urdhva_base.queryparams.QueryParams()
-    params.q = f'id = {data.ticket_id}'
-    params.limit = 1
-    res = await Ticketing.get_all(params,resp_type='plain')
-
-    if not res.get('data'):
-        raise HTTPException(status_code=404,detail="Ticket not Found")
-
-    await Ticketing(**{"id":data.ticket_id,"created_by":data.reporter_name}).modify()
-    return {
-        'status':True,
-        'message':f"The reporter of {data.ticket_id} has changed to {data.reporter_name}"
-    }
-
-
-
-
-# Action add_comment_to_ticket
-@router.post('/add-comment-to-ticket', tags=['Ticketing'])
-async def ticketing_add_comment_to_ticket(data: ticketing_model.TicketingAddCommentToTicketParams):
+# Action update_ticket
+@router.post('/update-ticket', tags=['Ticketing'])
+async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketParams):
     try:
         tdata = data.__dict__
+        print(tdata)
         params = urdhva_base.queryparams.QueryParams()
-        params.q = f"id = '{data.ticket_id}'"
+        params.q = f"id='{data.update_id}'"
         params.limit = 1
-
-        res = await Ticketing.get_all(params,resp_type='plain')
-
-        if not res or  len(res.get('data',[])) == 0:
-            raise HTTPException(status_code=404,detail="Ticket not found")
+        result = await Ticketing.get_all(params,resp_type='plain')
+        res = result.get("data",[])
+        if not res:
+            return {
+                "status":False,
+                "message":"Ticket not found"
+            }
+        res = await Ticketing(**{"id":data.update_id,**tdata}).modify()
+        tdata.pop('update_id')
+        return {
+            "status": True,
+            "message": "Ticket updated successfully",
+        }
         
-        # existing_comment = res.get('data')[0]['comment_text']
-
-        # print("existing_comment---->",existing_comment)
-
-        updated_comment = {
-            "id":data.ticket_id,
-            'comment_text':data.comment_text,
-            "comment_id":str(uuid.uuid4())
-        }
-
-        await Ticketing(**updated_comment).modify()
-
-        return {
-            "status":True,
-            "messege":"Comment added sucessfully"
-        }
     except Exception as e:
         return {
-            'error':str(e)
+            "status":False,
+            "message":str(e)
         }
-
-
-# Action edit_comment
-@router.post('/edit-comment', tags=['Ticketing'])
-async def ticketing_edit_comment(data: ticketing_model.TicketingEditCommentParams): 
-    try:
-        params = urdhva_base.queryparams.QueryParams()
-        params.q = f"id='{data.ticket_id}'"
-        params.limit = 1
-
-        res =await Ticketing.get_all(params,resp_type='plain')
-
-        if not res or len(res.get('data',[]))== 0:
-            raise HTTPException(status_code=404,detail='Ticket not found')
-        
-        await Ticketing(**{
-            "id":data.ticket_id,
-            "comment_text":data.new_comment or  res.get('data')[0]['comment_text']
-        }).modify()
-
-        return {
-            'status':True,
-            'message':'comment changed Successfully'
-        }
-    except Exception as e:
-        return {
-            'error':str(e)
-        }
-    
-
-
-# Action delete_comment
-@router.post('/delete-comment', tags=['Ticketing'])
-async def ticketing_delete_comment(data: ticketing_model.TicketingDeleteCommentParams):
-    try:
-        params = urdhva_base.queryparams.QueryParams()
-        params.q = f"id='{data.ticket_id}"
-        params.limit = 1
-
-        res = await Ticketing.get_all(params,resp_type='plain')
-        if not res or len(res.get('data',[])) == 0:
-            raise HTTPException(status_code=404, detail="Ticket not found")
-
-        await Ticketing(**{
-            "id":data.ticket_id,
-            "comment_id":"",
-            "comment_text":""
-        }).modify()
-
-        return {
-            'status':True,
-            'message':f"comment of ticket_id {data.ticket_id} successfully deleted"
-        }
-    
-
-
-    except HTTPException:
-        raise
-
-    except Exception as e:
-        print("Unexpected error:", e)
-        raise HTTPException(
-            status_code=500,
-            detail="Something went wrong on the server."
-        )
-
-
-# Action drag_card
-@router.post('/drag-card', tags=['Ticketing'])
-async def ticketing_drag_card(data: ticketing_model.TicketingDragCardParams):
-    ...

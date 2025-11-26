@@ -101,7 +101,7 @@ class Settings(pydantic_settings.BaseSettings):
     mft_path: str = "/opt/pipeline/mft_path/"
     ui_path: str = ""
     # settings.py
-    ticketing_attachments: str = "C:/Users/Rakesh/OneDrive/Desktop/AlgoFusion/files"
+    ticketing_attachments: str = "C:/Users/Rakesh/OneDrive/Desktop/Ticketing_project/files"
     # ticketing_attachments: str = ""
     download_path: str = "/opt/pipeline/algo/orchestrator/masters"
     template_path: str = "/opt/pipeline/algo/orchestrator/notification_templates"

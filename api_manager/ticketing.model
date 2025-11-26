@@ -1,10 +1,3 @@
-
-Enum TicketStatus str {
-    Open='Open'
-    Pending='Pending'
-    Done='Done'
-}
-
 Enum Status str {
     Open='Open'
     Pending='Pending'
@@ -58,172 +51,87 @@ Model Ticketing {
 
     ticket_name optional str
     ticket_id index_field unique_field str
+
+    project_id optional str      
+    board_id optional str
+    workflow_id optional str
+    status_id optional str
+
     ticket_status Status
     ticket_state State
-    start_date optional datetime
-    end_date optional datetime
-    summary str
-    description str
     ticket_severity Severity
-    ticket_history optional list Ticket_History
-    merge_history optional list Merge_History
+
+    summary optional str
+    description optional str
+    comment optional str
+    
     file_attachment optional list str
     file_attachment_name optional str
     file_attachment_id optional str
-    comment_text optional str
-    comment_id optional str
-    comment_attachment_path optional str
+
     merge_status optional bool
-    assignee optional str
-    created_by optional str
 
+    milestone_id optional str
+    assignee_id optional str
+    reporter_id optional str
 
+    parent_ticket_id  optional str  
+
+    estimated_hours optional datetime        
+    total_hours_spent optional datetime
+    due_date optional datetime
+    start_date optional datetime
+    end_date optional datetime
     
     Action=> create_ticket {
+        
+        project_id optional str      
+        board_id optional str
+        workflow_id optional str
+        status_id optional str
 
 	    ticket_state State
-	    start_date optional datetime
-	    end_date optional datetime
-	    summary str
-	    description str
 	    ticket_severity Severity
+
+	    summary optional str
+	    description optional str
+        comment optional str
+
 	    file_attachment optional list str
-	    comment_text optional str
-        assignee optional str
-        created_by optional str
+	    
+        assignee_id optional str
+        reporter_id optional str
 
-    }
-
-    Action=> update_ticket {
-
-        update_id str
-	    ticket_state State
-	    start_date optional datetime
+        start_date optional datetime
 	    end_date optional datetime
-	    summary str
-	    description str
-	    ticket_severity Severity
-	    file_attachment optional list str
-	    comment_text optional str
-        merge_status optional bool
-        assignee optional str
-        created_by optional str
 
     }
 
-    Action=> delete_ticket{
-        delete_id str
-
-    }
 
     Action=> attach_file {
         ticket_id optional str
         file_path optional str
     }
 
+    Action=> update_ticket {
 
-    Action=> delete_file_attachment {
-        ticket_id str
-    }
+        update_id str
+	    ticket_state State
+        ticket_severity Severity
 
+	    summary optional str
+	    description optional str
+	    comment optional str
+        merge_status optional bool	    
+	    
+        file_attachment optional list str
 
-    Action=> drag_card {
-        ticket_id str
-        ticket_state State
+        reporter_id optional str
+        assignee_id optional str
 
-    }
+        start_date optional datetime
+	    end_date optional datetime
 
-    
-    Action=> update_assignee{
-        ticket_id str
-        assignee str
-
-    }
-
-    Action=> update_reporter{
-        ticket_id str
-        reporter_name str
-    }
-
-    Action=> add_comment_to_ticket{
-        ticket_id str
-        comment_text str
-    }
-
-    Action=> edit_comment {
-        ticket_id str
-        existing_comment_text str
-        comment_id str
-        new_comment str
-    }
-
-    Action=> delete_comment{
-        ticket_id str
-        comment_id str
-        existing_comment_text str
-    }
-
-
-    Config=>{
-        crud_operations='read'
-
-    }
-}
-
-Model Zone{
-    zone_name unique_field str
-    zone_short_name unique_field str
-    zone_id optional str
-
-    Action=>add_new_zone{
-        zone_name str
-        zone_short_name str
-    }
-
-    Config=>{
-        crud_operations='read'
-    }
-
-}
-
-Model Region{
-    region_name str
-    region_short_name str
-    region_id optional str
-
-    Action=> add_new_region{
-        region_name str
-        region_short_name str
-    }
-
-    Config=>{
-        crud_operations='read'
-    }
-
-}
-
-
-
-Model MasterData {
-    name str
-    description str
-    value unique_field str
-
-    Action=>add_new_data{
-        name str
-        description str
-        value str
-    }
-
-    Action=>update_data{
-        md_id str
-        name optional str
-        description optional str
-        value optional str
-    }
-
-    Action=>delete_data {
-        md_id str
     }
 
     Config=>{
@@ -231,126 +139,26 @@ Model MasterData {
     }
 }
 
-Model Workflow{
 
-    workflow_name unique_field str
-    created_by str
+Model TicketHistory {
 
-    Action=> add_workflow{
-        workflow_name str
-        created_by str
+    ticket_id optional int
+    changed_by optional str
+    field_name optional str
+    old_value optional str
+    new_value optional str
+
+    Action=> create_history {
+
+        ticket_id optional int
+        changed_by optional str
+        field_name optional str
+        old_value optional str
+        new_value optional str
     }
 
-    Action=> update_workflow{
-
-        workflow_id str
-        workflow_name str
-        created_by str
-    }
-
-    Action=> delete_workflow {
-        workflow_id int
-    }
-
-    Config=>{
-        crud_operations='read'
-    }
+Config=>{
+    foreign_keys='ticket_id=ticketing.id::int;instance_id=ticket_history.ticket_id'
+    crud_operations='read'
 }
-
-Model order internal{
-
-    ticket_state str
-    ticket_status str
-
-
 }
-
-Model WorkflowStatus{
-
-    workflow_id int
-    ticket_state str
-    ticket_status str
-    order_no int
-    
-    Action=> update_order{
-
-        workflow_id int
-        workflow_order list order
-        
-    }
-
-
-    Config=>{
-        foreign_keys='workflow_id=workflow.id::int;instance_id=workflowstatus.workflow_id'
-        crud_operations='read'
-    }
-
-}
-
-Model Boards{
-
-
-    workflow_id int
-    board_name unique_field str
-    board_owner str
-
-    
-    Action=> add_board{
-
-        workflow_id int
-        board_name str
-        board_owner str
-    }
-
-    Action=> update_board{
-
-        board_id str
-        workflow_id optional int
-        board_name optional str
-        board_owner optional str
-    }
-
-    Action=> delete_board{
-        board_id int
-    }
-
-
-    Config=>{
-        foreign_keys='workflow_id=workflow.id::int;instance_id=boards.workflow_id'
-        crud_operations='read'
-    }
-    
-}
-
-Model Users {
-
-    user_id optional str
-    first_name optional str
-    last_name optional str
-    email unique_field str
-    password str
-    phone_number optional str
-    role str
-    is_active bool
-
-
-    Action=> add_user{
-        email list str
-        role str
-    }
-
-    Action=> user_sign_up{
-
-        first_name optional str
-        last_name optional str
-        email str
-        password str
-        phone_number optional str
-    }
-
-    Config=>{
-        crud_operations='read'
-    }
-
-}
-

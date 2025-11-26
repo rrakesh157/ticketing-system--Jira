@@ -29,34 +29,10 @@
                     "name": "create_ticket"
                 },
                 {
-                    "name": "update_ticket"
-                },
-                {
-                    "name": "delete_ticket"
-                },
-                {
                     "name": "attach_file"
                 },
                 {
-                    "name": "delete_file_attachment"
-                },
-                {
-                    "name": "drag_card"
-                },
-                {
-                    "name": "update_assignee"
-                },
-                {
-                    "name": "update_reporter"
-                },
-                {
-                    "name": "add_comment_to_ticket"
-                },
-                {
-                    "name": "edit_comment"
-                },
-                {
-                    "name": "delete_comment"
+                    "name": "update_ticket"
                 }
             ]
         },
@@ -101,45 +77,21 @@
                     "name": "create_ticket"
                 },
                 {
-                    "name": "update_ticket"
-                },
-                {
-                    "name": "delete_ticket"
-                },
-                {
                     "name": "attach_file"
                 },
                 {
-                    "name": "delete_file_attachment"
-                },
-                {
-                    "name": "drag_card"
-                },
-                {
-                    "name": "update_assignee"
-                },
-                {
-                    "name": "update_reporter"
-                },
-                {
-                    "name": "add_comment_to_ticket"
-                },
-                {
-                    "name": "edit_comment"
-                },
-                {
-                    "name": "delete_comment"
+                    "name": "update_ticket"
                 }
             ]
         },
         {
-            "name": "zone",
+            "name": "tickethistory",
             "type": "all",
             "ownerManagedAccess": false,
-            "displayName": "Zone",
+            "displayName": "TicketHistory",
             "attributes": {},
             "uris": [
-                "/api/zone/*"
+                "/api/tickethistory/*"
             ],
             "scopes": [
                 {
@@ -155,18 +107,18 @@
                     "name": "delete"
                 },
                 {
-                    "name": "add_new_zone"
+                    "name": "create_history"
                 }
             ]
         },
         {
-            "name": "zone_readOnly",
+            "name": "tickethistory_readOnly",
             "type": "readOnly",
             "ownerManagedAccess": false,
-            "displayName": "Zone_readOnly",
+            "displayName": "TicketHistory_readOnly",
             "attributes": {},
             "uris": [
-                "/api/zone/*"
+                "/api/tickethistory/*"
             ],
             "scopes": [
                 {
@@ -175,13 +127,13 @@
             ]
         },
         {
-            "name": "zone_admin",
+            "name": "tickethistory_admin",
             "type": "admin",
             "ownerManagedAccess": false,
-            "displayName": "Zone_admin",
+            "displayName": "TicketHistory_admin",
             "attributes": {},
             "uris": [
-                "/api/zone/*"
+                "/api/tickethistory/*"
             ],
             "scopes": [
                 {
@@ -197,463 +149,7 @@
                     "name": "delete"
                 },
                 {
-                    "name": "add_new_zone"
-                }
-            ]
-        },
-        {
-            "name": "region",
-            "type": "all",
-            "ownerManagedAccess": false,
-            "displayName": "Region",
-            "attributes": {},
-            "uris": [
-                "/api/region/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_new_region"
-                }
-            ]
-        },
-        {
-            "name": "region_readOnly",
-            "type": "readOnly",
-            "ownerManagedAccess": false,
-            "displayName": "Region_readOnly",
-            "attributes": {},
-            "uris": [
-                "/api/region/*"
-            ],
-            "scopes": [
-                {
-                    "name": "read"
-                }
-            ]
-        },
-        {
-            "name": "region_admin",
-            "type": "admin",
-            "ownerManagedAccess": false,
-            "displayName": "Region_admin",
-            "attributes": {},
-            "uris": [
-                "/api/region/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_new_region"
-                }
-            ]
-        },
-        {
-            "name": "masterdata",
-            "type": "all",
-            "ownerManagedAccess": false,
-            "displayName": "MasterData",
-            "attributes": {},
-            "uris": [
-                "/api/masterdata/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_new_data"
-                },
-                {
-                    "name": "update_data"
-                },
-                {
-                    "name": "delete_data"
-                }
-            ]
-        },
-        {
-            "name": "masterdata_readOnly",
-            "type": "readOnly",
-            "ownerManagedAccess": false,
-            "displayName": "MasterData_readOnly",
-            "attributes": {},
-            "uris": [
-                "/api/masterdata/*"
-            ],
-            "scopes": [
-                {
-                    "name": "read"
-                }
-            ]
-        },
-        {
-            "name": "masterdata_admin",
-            "type": "admin",
-            "ownerManagedAccess": false,
-            "displayName": "MasterData_admin",
-            "attributes": {},
-            "uris": [
-                "/api/masterdata/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_new_data"
-                },
-                {
-                    "name": "update_data"
-                },
-                {
-                    "name": "delete_data"
-                }
-            ]
-        },
-        {
-            "name": "workflow",
-            "type": "all",
-            "ownerManagedAccess": false,
-            "displayName": "Workflow",
-            "attributes": {},
-            "uris": [
-                "/api/workflow/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_workflow"
-                },
-                {
-                    "name": "update_workflow"
-                },
-                {
-                    "name": "delete_workflow"
-                }
-            ]
-        },
-        {
-            "name": "workflow_readOnly",
-            "type": "readOnly",
-            "ownerManagedAccess": false,
-            "displayName": "Workflow_readOnly",
-            "attributes": {},
-            "uris": [
-                "/api/workflow/*"
-            ],
-            "scopes": [
-                {
-                    "name": "read"
-                }
-            ]
-        },
-        {
-            "name": "workflow_admin",
-            "type": "admin",
-            "ownerManagedAccess": false,
-            "displayName": "Workflow_admin",
-            "attributes": {},
-            "uris": [
-                "/api/workflow/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_workflow"
-                },
-                {
-                    "name": "update_workflow"
-                },
-                {
-                    "name": "delete_workflow"
-                }
-            ]
-        },
-        {
-            "name": "workflowstatus",
-            "type": "all",
-            "ownerManagedAccess": false,
-            "displayName": "WorkflowStatus",
-            "attributes": {},
-            "uris": [
-                "/api/workflowstatus/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "update_order"
-                }
-            ]
-        },
-        {
-            "name": "workflowstatus_readOnly",
-            "type": "readOnly",
-            "ownerManagedAccess": false,
-            "displayName": "WorkflowStatus_readOnly",
-            "attributes": {},
-            "uris": [
-                "/api/workflowstatus/*"
-            ],
-            "scopes": [
-                {
-                    "name": "read"
-                }
-            ]
-        },
-        {
-            "name": "workflowstatus_admin",
-            "type": "admin",
-            "ownerManagedAccess": false,
-            "displayName": "WorkflowStatus_admin",
-            "attributes": {},
-            "uris": [
-                "/api/workflowstatus/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "update_order"
-                }
-            ]
-        },
-        {
-            "name": "boards",
-            "type": "all",
-            "ownerManagedAccess": false,
-            "displayName": "Boards",
-            "attributes": {},
-            "uris": [
-                "/api/boards/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_board"
-                },
-                {
-                    "name": "update_board"
-                },
-                {
-                    "name": "delete_board"
-                }
-            ]
-        },
-        {
-            "name": "boards_readOnly",
-            "type": "readOnly",
-            "ownerManagedAccess": false,
-            "displayName": "Boards_readOnly",
-            "attributes": {},
-            "uris": [
-                "/api/boards/*"
-            ],
-            "scopes": [
-                {
-                    "name": "read"
-                }
-            ]
-        },
-        {
-            "name": "boards_admin",
-            "type": "admin",
-            "ownerManagedAccess": false,
-            "displayName": "Boards_admin",
-            "attributes": {},
-            "uris": [
-                "/api/boards/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_board"
-                },
-                {
-                    "name": "update_board"
-                },
-                {
-                    "name": "delete_board"
-                }
-            ]
-        },
-        {
-            "name": "users",
-            "type": "all",
-            "ownerManagedAccess": false,
-            "displayName": "Users",
-            "attributes": {},
-            "uris": [
-                "/api/users/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_user"
-                },
-                {
-                    "name": "user_sign_up"
-                }
-            ]
-        },
-        {
-            "name": "users_readOnly",
-            "type": "readOnly",
-            "ownerManagedAccess": false,
-            "displayName": "Users_readOnly",
-            "attributes": {},
-            "uris": [
-                "/api/users/*"
-            ],
-            "scopes": [
-                {
-                    "name": "read"
-                }
-            ]
-        },
-        {
-            "name": "users_admin",
-            "type": "admin",
-            "ownerManagedAccess": false,
-            "displayName": "Users_admin",
-            "attributes": {},
-            "uris": [
-                "/api/users/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "add_user"
-                },
-                {
-                    "name": "user_sign_up"
+                    "name": "create_history"
                 }
             ]
         }
@@ -739,100 +235,16 @@
             "displayName": "create_ticket"
         },
         {
-            "name": "update_ticket",
-            "displayName": "update_ticket"
-        },
-        {
-            "name": "delete_ticket",
-            "displayName": "delete_ticket"
-        },
-        {
             "name": "attach_file",
             "displayName": "attach_file"
         },
         {
-            "name": "delete_file_attachment",
-            "displayName": "delete_file_attachment"
+            "name": "update_ticket",
+            "displayName": "update_ticket"
         },
         {
-            "name": "drag_card",
-            "displayName": "drag_card"
-        },
-        {
-            "name": "update_assignee",
-            "displayName": "update_assignee"
-        },
-        {
-            "name": "update_reporter",
-            "displayName": "update_reporter"
-        },
-        {
-            "name": "add_comment_to_ticket",
-            "displayName": "add_comment_to_ticket"
-        },
-        {
-            "name": "edit_comment",
-            "displayName": "edit_comment"
-        },
-        {
-            "name": "delete_comment",
-            "displayName": "delete_comment"
-        },
-        {
-            "name": "add_new_zone",
-            "displayName": "add_new_zone"
-        },
-        {
-            "name": "add_new_region",
-            "displayName": "add_new_region"
-        },
-        {
-            "name": "add_new_data",
-            "displayName": "add_new_data"
-        },
-        {
-            "name": "update_data",
-            "displayName": "update_data"
-        },
-        {
-            "name": "delete_data",
-            "displayName": "delete_data"
-        },
-        {
-            "name": "add_workflow",
-            "displayName": "add_workflow"
-        },
-        {
-            "name": "update_workflow",
-            "displayName": "update_workflow"
-        },
-        {
-            "name": "delete_workflow",
-            "displayName": "delete_workflow"
-        },
-        {
-            "name": "update_order",
-            "displayName": "update_order"
-        },
-        {
-            "name": "add_board",
-            "displayName": "add_board"
-        },
-        {
-            "name": "update_board",
-            "displayName": "update_board"
-        },
-        {
-            "name": "delete_board",
-            "displayName": "delete_board"
-        },
-        {
-            "name": "add_user",
-            "displayName": "add_user"
-        },
-        {
-            "name": "user_sign_up",
-            "displayName": "user_sign_up"
+            "name": "create_history",
+            "displayName": "create_history"
         }
     ]
 }
