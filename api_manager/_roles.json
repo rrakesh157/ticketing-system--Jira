@@ -108,6 +108,9 @@
                 },
                 {
                     "name": "create_history"
+                },
+                {
+                    "name": "get_ticket_id"
                 }
             ]
         },
@@ -123,6 +126,9 @@
             "scopes": [
                 {
                     "name": "read"
+                },
+                {
+                    "name": "get_ticket_id"
                 }
             ]
         },
@@ -150,6 +156,9 @@
                 },
                 {
                     "name": "create_history"
+                },
+                {
+                    "name": "get_ticket_id"
                 }
             ]
         },
@@ -177,6 +186,15 @@
                 },
                 {
                     "name": "create_comment"
+                },
+                {
+                    "name": "update_comment"
+                },
+                {
+                    "name": "delete_comment"
+                },
+                {
+                    "name": "get_comments"
                 }
             ]
         },
@@ -192,6 +210,9 @@
             "scopes": [
                 {
                     "name": "read"
+                },
+                {
+                    "name": "get_comments"
                 }
             ]
         },
@@ -219,6 +240,15 @@
                 },
                 {
                     "name": "create_comment"
+                },
+                {
+                    "name": "update_comment"
+                },
+                {
+                    "name": "delete_comment"
+                },
+                {
+                    "name": "get_comments"
                 }
             ]
         },
@@ -246,6 +276,12 @@
                 },
                 {
                     "name": "create_collabs"
+                },
+                {
+                    "name": "get_collabs"
+                },
+                {
+                    "name": "update_collabs"
                 }
             ]
         },
@@ -261,6 +297,9 @@
             "scopes": [
                 {
                     "name": "read"
+                },
+                {
+                    "name": "get_collabs"
                 }
             ]
         },
@@ -288,6 +327,12 @@
                 },
                 {
                     "name": "create_collabs"
+                },
+                {
+                    "name": "get_collabs"
+                },
+                {
+                    "name": "update_collabs"
                 }
             ]
         },
@@ -471,6 +516,9 @@
                 },
                 {
                     "name": "delete_board"
+                },
+                {
+                    "name": "get_board_tickets"
                 }
             ]
         },
@@ -486,6 +534,9 @@
             "scopes": [
                 {
                     "name": "read"
+                },
+                {
+                    "name": "get_board_tickets"
                 }
             ]
         },
@@ -519,6 +570,9 @@
                 },
                 {
                     "name": "delete_board"
+                },
+                {
+                    "name": "get_board_tickets"
                 }
             ]
         },
@@ -697,12 +751,36 @@
             "displayName": "create_history"
         },
         {
+            "name": "get_ticket_id",
+            "displayName": "get_ticket_id"
+        },
+        {
             "name": "create_comment",
             "displayName": "create_comment"
         },
         {
+            "name": "update_comment",
+            "displayName": "update_comment"
+        },
+        {
+            "name": "delete_comment",
+            "displayName": "delete_comment"
+        },
+        {
+            "name": "get_comments",
+            "displayName": "get_comments"
+        },
+        {
             "name": "create_collabs",
             "displayName": "create_collabs"
+        },
+        {
+            "name": "get_collabs",
+            "displayName": "get_collabs"
+        },
+        {
+            "name": "update_collabs",
+            "displayName": "update_collabs"
         },
         {
             "name": "add_workflow",
@@ -731,6 +809,10 @@
         {
             "name": "delete_board",
             "displayName": "delete_board"
+        },
+        {
+            "name": "get_board_tickets",
+            "displayName": "get_board_tickets"
         },
         {
             "name": "add_user",

@@ -271,6 +271,14 @@ class TickethistoryCreateHistoryParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
+class TickethistoryGetTicketIdParams(pydantic.BaseModel):
+    ticket_id: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
 class TicketCommentSchema(UrdhvaPostgresBase):
     __tablename__ = 'ticket_comment'
     
@@ -278,6 +286,7 @@ class TicketCommentSchema(UrdhvaPostgresBase):
     commented_by: Mapped[typing.Optional[int]] = mapped_column("commented_by", Integer, index=False, nullable=True, default=0, primary_key=False, unique=False)
     comment_text: Mapped[typing.Optional[str]] = mapped_column("comment_text", String, index=False, nullable=True, default="", primary_key=False, unique=False)
     attachment_path: Mapped[typing.Optional[str]] = mapped_column("attachment_path", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+    edited: Mapped[typing.Optional[bool]] = mapped_column("edited", Boolean, index=False, nullable=True, default=False, primary_key=False, unique=False)
 
 
 class TicketCommentCreate(urdhva_base.postgresmodel.BasePostgresModel):
@@ -287,6 +296,7 @@ class TicketCommentCreate(urdhva_base.postgresmodel.BasePostgresModel):
     commented_by: typing.Optional[int] = pydantic.Field(0, **{})
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
     attachment_path: typing.Optional[str] = pydantic.Field("", **{})
+    edited: typing.Optional[bool] = pydantic.Field(False, )
 
     class Config:
         collection_name = 'data_flow'
@@ -303,6 +313,7 @@ class TicketComment(urdhva_base.postgresmodel.PostgresModel):
     commented_by: typing.Optional[int] = pydantic.Field(0, **{})
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
     attachment_path: typing.Optional[str] = pydantic.Field("", **{})
+    edited: typing.Optional[bool] = pydantic.Field(False, )
 
     class Config:
         collection_name = 'data_flow'
@@ -323,6 +334,34 @@ class TicketcommentCreateCommentParams(pydantic.BaseModel):
     commented_by: typing.Optional[int] = pydantic.Field(0, **{})
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
     attachment_path: typing.Optional[str] = pydantic.Field("", **{})
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketcommentUpdateCommentParams(pydantic.BaseModel):
+    comment_id: typing.Optional[int] = pydantic.Field(0, **{})
+    commented_by: typing.Optional[int] = pydantic.Field(0, **{})
+    comment_text: typing.Optional[str] = pydantic.Field("", **{})
+    attachment_path: typing.Optional[str] = pydantic.Field("", **{})
+    edited: typing.Optional[bool] = pydantic.Field(False, )
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketcommentDeleteCommentParams(pydantic.BaseModel):
+    comment_id: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketcommentGetCommentsParams(pydantic.BaseModel):
+    ticket_id: str
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
@@ -372,7 +411,24 @@ class TicketCollaboratorsGetResp(pydantic.BaseModel):
 
 class TicketcollaboratorsCreateCollabsParams(pydantic.BaseModel):
     ticket_id: typing.Optional[str] = pydantic.Field("", **{})
-    user_id: typing.Optional[str] = pydantic.Field("", **{})
+    user_id: typing.Optional[typing.List[str]] = pydantic.Field("", **{})
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketcollaboratorsGetCollabsParams(pydantic.BaseModel):
+    ticket_id: str
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class TicketcollaboratorsUpdateCollabsParams(pydantic.BaseModel):
+    ticket_id: typing.Optional[str] = pydantic.Field("", **{})
+    user_id: typing.Optional[typing.List[str]] = pydantic.Field("", **{})
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
@@ -579,6 +635,14 @@ class BoardsUpdateBoardParams(pydantic.BaseModel):
 
 class BoardsDeleteBoardParams(pydantic.BaseModel):
     board_id: int
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class BoardsGetBoardTicketsParams(pydantic.BaseModel):
+    board_id: str
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:

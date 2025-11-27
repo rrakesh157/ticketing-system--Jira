@@ -160,6 +160,12 @@ Model TicketHistory {
         new_value optional str
     }
 
+
+
+    Action=> get_ticket_id{
+        ticket_id str
+    }
+
 Config=>{
     foreign_keys='ticket_id=ticketing.id::int;instance_id=ticket_history.ticket_id'
     crud_operations='read'
@@ -172,6 +178,7 @@ Model TicketComment {
     commented_by optional int
     comment_text optional str
     attachment_path optional str
+    edited optional bool
 
     Action=> create_comment{
 
@@ -179,6 +186,23 @@ Model TicketComment {
             commented_by optional int
             comment_text optional str
             attachment_path optional str
+    }
+
+    Action=> update_comment{
+
+            comment_id  optional int
+            commented_by optional int
+            comment_text optional str
+            attachment_path optional str
+            edited optional bool
+    }
+
+    Action=> delete_comment{
+        comment_id str
+    }
+
+    Action=> get_comments{
+        ticket_id str
     }
 
     Config=>{
@@ -196,7 +220,17 @@ Model TicketCollaborators {
     Action=> create_collabs{
         
         ticket_id optional str
-        user_id optional str   
+        user_id optional list str   
+    }
+
+    Action=> get_collabs {
+        ticket_id str
+    }
+
+    Action=> update_collabs{
+
+        ticket_id optional str
+        user_id optional list str         
     }
 
     Config=>{
@@ -288,6 +322,11 @@ Model Boards{
 
     Action=> delete_board{
         board_id int
+    }
+
+    Action=> get_board_tickets{
+        board_id str
+        
     }
 
 
