@@ -6,10 +6,11 @@ Enum Status str {
 
 Enum State str {
     ToDo='ToDo'
-    InProgress='InProgress'
+    In Progress='In Progress'
     Cancelled='Cancelled'
     Resolved='Resolved'
-    OnHold='OnHold'
+    On Hold='On Hold'
+    Re Open = 'Re Open'
 }
 
 Enum Severity str {
@@ -21,10 +22,11 @@ Enum Severity str {
 
 Enum TicketType str{
     ToDo = 'TicketRaised'
-    InProgress = 'TicketInProgress'
+    In Progress = 'TicketInProgress'
     Cancelled = 'TicketCancelled'
     Resolved = 'TicketResolved'
-    OnHold = 'TicketOnHold'  
+    On Hold = 'TicketOnHold'
+    Re Open = 'TicketReOpened'
 }
 
 
@@ -90,6 +92,7 @@ Model Ticketing {
         workflow_id optional str
         status_id optional str
 
+        ticket_status Status
 	    ticket_state State
 	    ticket_severity Severity
 
@@ -162,3 +165,171 @@ Config=>{
     crud_operations='read'
 }
 }
+
+Model TicketComment {
+
+    ticket_id  optional int
+    commented_by optional int
+    comment_text optional str
+    attachment_path optional str
+
+    Action=> create_comment{
+
+            ticket_id  optional int
+            commented_by optional int
+            comment_text optional str
+            attachment_path optional str
+    }
+
+    Config=>{
+        foreign_keys='ticket_id=ticketing.id::int;instance_id=ticketcomment.ticket_id'
+        crud_operations='read'
+    }
+}
+
+
+Model TicketCollaborators {
+
+    ticket_id optional int
+    user_id optional int
+
+    Action=> create_collabs{
+        
+        ticket_id optional str
+        user_id optional str   
+    }
+
+    Config=>{
+        foreign_keys='ticket_id=ticketing.id::int;instance_id=ticketcollaborators.ticket_id, user_id=users.id::int;instance_id=ticketcollaborators.user_id'
+        crud_operations='read'
+    }
+}
+
+
+
+Model Workflow{
+
+    workflow_name unique_field str
+    created_by str
+
+    Action=> add_workflow{
+        workflow_name str
+        created_by str
+    }
+
+    Action=> update_workflow{
+
+        workflow_id str
+        workflow_name str
+        created_by str
+    }
+
+    Action=> delete_workflow {
+        workflow_id int
+    }
+
+    Config=>{
+        crud_operations='read'
+    }
+}
+
+Model order internal{
+
+    ticket_state str
+    ticket_status str
+
+
+}
+
+Model WorkflowStatus{
+
+    workflow_id int
+    ticket_state str
+    ticket_status str
+    order_no int
+    
+    Action=> update_order{
+
+        workflow_id int
+        workflow_order list order
+        
+    }
+
+
+    Config=>{
+        foreign_keys='workflow_id=workflow.id::int;instance_id=workflowstatus.workflow_id'
+        crud_operations='read'
+    }
+
+}
+
+Model Boards{
+
+
+    workflow_id int
+    board_name unique_field str
+    board_owner str
+
+    
+    Action=> add_board{
+
+        workflow_id int
+        board_name str
+        board_owner str
+    }
+
+    Action=> update_board{
+
+        board_id str
+        workflow_id optional int
+        board_name optional str
+        board_owner optional str
+    }
+
+    Action=> delete_board{
+        board_id int
+    }
+
+
+    Config=>{
+        foreign_keys='workflow_id=workflow.id::int;instance_id=boards.workflow_id'
+        crud_operations='read'
+    }
+    
+}
+
+
+Model Users {
+    
+    First_name optional str
+    Last_name optional str
+    Email str
+    Phone_number optional str
+    Password_hash str
+    Role optional str
+    Is_active bool
+
+    Action=> add_user{
+        email list str
+        role str
+    }
+
+    Action=> sign_up{
+
+        first_name optional str
+        last_name optional str
+        email str
+        password str
+        phone_number optional str
+    }
+
+    Action=> sign_in{
+        email str
+        password str       
+    }
+
+    Config=>{
+    crud_operations='read'
+        }
+}
+

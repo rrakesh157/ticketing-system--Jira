@@ -51,11 +51,11 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
         t_id = generate_ticket_id()
 
         tdata['ticket_id'] = t_id
-        tdata['ticket_name'] = f'ticket_name {t_id}'
+        tdata['ticket_name'] = f'ticket_name {t_id}' #creating the ticket name
 
 
         startdate_str = tdata.get('startdate')
-        if startdate_str:
+        if startdate_str:#updating the startdate to particular format
             try:
                 startdate = parser.isoparse(startdate_str)
                 print("startdate1-->",startdate)
@@ -93,11 +93,12 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
             "action_type":action_type_str})
         
 
-        await ticketing_model.TicketingCreate(**tdata).create() #inserting data into the table
+        result = await ticketing_model.TicketingCreate(**tdata).create() #inserting data into the table
 
         return {
             'Message':'Tickets Created Successfully',
-            'Ticket':tdata
+            'Ticket':tdata,
+            'id':result['id']
         }
     except Exception as e:
         return {
@@ -117,7 +118,7 @@ async def ticketing_attach_file(
         print("comming...",urdhva_base.settings.ticketing_attachments)
         target_dir = urdhva_base.settings.ticketing_attachments
         print("target_dir",target_dir)
-        if not os.path.exists(target_dir):
+        if not os.path.exists(target_dir):#creating the path if not existed
             os.makedirs(target_dir)
 
         temp_file_path = os.path.join(target_dir,uploadfile.filename)
@@ -156,7 +157,7 @@ async def ticketing_attach_file(
             print("iddddddddd",id)
 
             
-            await Ticketing(**{"id":id,**attachment_file}).modify()
+            await Ticketing(**{"id":id,**attachment_file}).modify()# updaiting the file attachments
         print("not entering")
 
 
@@ -189,12 +190,12 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
         params.limit = 1
         result = await Ticketing.get_all(params,resp_type='plain')
         res = result.get("data",[])
-        if not res:
+        if not res: 
             return {
                 "status":False,
                 "message":"Ticket not found"
             }
-        res = await Ticketing(**{"id":data.update_id,**tdata}).modify()
+        res = await Ticketing(**{"id":data.update_id,**tdata}).modify() # updating the ticket
         tdata.pop('update_id')
         return {
             "status": True,

@@ -27,12 +27,10 @@ async def ticket_history_create_history(data: ticketing_model.TickethistoryCreat
                 "message":"Ticket not found"
             }
         
-        if data.old_value in ['Open','Close','Pending']:
+        if data.new_value in ['Open','Close','Pending']:
             tdata["field_name"] = "Status"
-        if data.old_value in ['Critical','High','Medium','Low']:
+        if data.new_value in ['Critical','High','Medium','Low']:
             tdata["field_name"] = "Severity"
-        if data.old_value == None:
-            tdata["field_name"] = "State"
         else:
             tdata["field_name"] = "State"
 

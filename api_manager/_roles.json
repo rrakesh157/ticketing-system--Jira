@@ -152,6 +152,456 @@
                     "name": "create_history"
                 }
             ]
+        },
+        {
+            "name": "ticketcomment",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "TicketComment",
+            "attributes": {},
+            "uris": [
+                "/api/ticketcomment/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "create_comment"
+                }
+            ]
+        },
+        {
+            "name": "ticketcomment_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "TicketComment_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/ticketcomment/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "ticketcomment_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "TicketComment_admin",
+            "attributes": {},
+            "uris": [
+                "/api/ticketcomment/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "create_comment"
+                }
+            ]
+        },
+        {
+            "name": "ticketcollaborators",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "TicketCollaborators",
+            "attributes": {},
+            "uris": [
+                "/api/ticketcollaborators/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "create_collabs"
+                }
+            ]
+        },
+        {
+            "name": "ticketcollaborators_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "TicketCollaborators_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/ticketcollaborators/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "ticketcollaborators_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "TicketCollaborators_admin",
+            "attributes": {},
+            "uris": [
+                "/api/ticketcollaborators/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "create_collabs"
+                }
+            ]
+        },
+        {
+            "name": "workflow",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Workflow",
+            "attributes": {},
+            "uris": [
+                "/api/workflow/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_workflow"
+                },
+                {
+                    "name": "update_workflow"
+                },
+                {
+                    "name": "delete_workflow"
+                }
+            ]
+        },
+        {
+            "name": "workflow_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Workflow_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/workflow/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "workflow_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Workflow_admin",
+            "attributes": {},
+            "uris": [
+                "/api/workflow/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_workflow"
+                },
+                {
+                    "name": "update_workflow"
+                },
+                {
+                    "name": "delete_workflow"
+                }
+            ]
+        },
+        {
+            "name": "workflowstatus",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "WorkflowStatus",
+            "attributes": {},
+            "uris": [
+                "/api/workflowstatus/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "update_order"
+                }
+            ]
+        },
+        {
+            "name": "workflowstatus_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "WorkflowStatus_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/workflowstatus/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "workflowstatus_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "WorkflowStatus_admin",
+            "attributes": {},
+            "uris": [
+                "/api/workflowstatus/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "update_order"
+                }
+            ]
+        },
+        {
+            "name": "boards",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Boards",
+            "attributes": {},
+            "uris": [
+                "/api/boards/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_board"
+                },
+                {
+                    "name": "update_board"
+                },
+                {
+                    "name": "delete_board"
+                }
+            ]
+        },
+        {
+            "name": "boards_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Boards_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/boards/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "boards_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Boards_admin",
+            "attributes": {},
+            "uris": [
+                "/api/boards/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_board"
+                },
+                {
+                    "name": "update_board"
+                },
+                {
+                    "name": "delete_board"
+                }
+            ]
+        },
+        {
+            "name": "users",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Users",
+            "attributes": {},
+            "uris": [
+                "/api/users/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_user"
+                },
+                {
+                    "name": "sign_up"
+                },
+                {
+                    "name": "sign_in"
+                }
+            ]
+        },
+        {
+            "name": "users_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Users_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/users/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "users_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Users_admin",
+            "attributes": {},
+            "uris": [
+                "/api/users/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "add_user"
+                },
+                {
+                    "name": "sign_up"
+                },
+                {
+                    "name": "sign_in"
+                }
+            ]
         }
     ],
     "policies": [
@@ -245,6 +695,54 @@
         {
             "name": "create_history",
             "displayName": "create_history"
+        },
+        {
+            "name": "create_comment",
+            "displayName": "create_comment"
+        },
+        {
+            "name": "create_collabs",
+            "displayName": "create_collabs"
+        },
+        {
+            "name": "add_workflow",
+            "displayName": "add_workflow"
+        },
+        {
+            "name": "update_workflow",
+            "displayName": "update_workflow"
+        },
+        {
+            "name": "delete_workflow",
+            "displayName": "delete_workflow"
+        },
+        {
+            "name": "update_order",
+            "displayName": "update_order"
+        },
+        {
+            "name": "add_board",
+            "displayName": "add_board"
+        },
+        {
+            "name": "update_board",
+            "displayName": "update_board"
+        },
+        {
+            "name": "delete_board",
+            "displayName": "delete_board"
+        },
+        {
+            "name": "add_user",
+            "displayName": "add_user"
+        },
+        {
+            "name": "sign_up",
+            "displayName": "sign_up"
+        },
+        {
+            "name": "sign_in",
+            "displayName": "sign_in"
         }
     ]
 }

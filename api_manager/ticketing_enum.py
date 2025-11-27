@@ -9,10 +9,14 @@ class Status(str, enum.Enum):
 
 class State(str, enum.Enum):
     TODO = 'ToDo'
-    INPROGRESS = 'InProgress'
+    IN = 'in'
+    PROGRESS = 'In Progress'
     CANCELLED = 'Cancelled'
     RESOLVED = 'Resolved'
-    ONHOLD = 'OnHold'
+    ON = 'on'
+    HOLD = 'On Hold'
+    RE = 're'
+    OPEN = 'Re Open'
 
 
 class Severity(str, enum.Enum):
@@ -24,7 +28,11 @@ class Severity(str, enum.Enum):
 
 class TicketType(str, enum.Enum):
     TODO = 'TicketRaised'
-    INPROGRESS = 'TicketInProgress'
+    IN = 'in'
+    PROGRESS = 'TicketInProgress'
     CANCELLED = 'TicketCancelled'
     RESOLVED = 'TicketResolved'
-    ONHOLD = 'TicketOnHold'
+    ON = 'on'
+    HOLD = 'TicketOnHold'
+    RE = 're'
+    OPEN = 'TicketReOpened'
