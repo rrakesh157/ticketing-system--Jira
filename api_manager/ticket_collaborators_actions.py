@@ -46,7 +46,7 @@ async def ticket_collaborators_create_collabs(data: ticketing_model.Ticketcollab
                 "user_id":uid
             })
             res = await TicketCollaboratorsCreate(**tdata).create() #
-            print("added",res['user_id'])
+            print("added",res['user_id']) 
         return {
             'status':True,
             'messsage':"Collabs added successfully"

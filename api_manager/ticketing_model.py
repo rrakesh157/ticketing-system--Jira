@@ -279,6 +279,12 @@ class TickethistoryGetTicketIdParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
+class ReplyCreate(pydantic.BaseModel):
+    user_id: int
+    comment: typing.Optional[str] = pydantic.Field("", **{})
+    created_at: typing.Optional[datetime.datetime] | None = None
+
+
 class TicketCommentSchema(UrdhvaPostgresBase):
     __tablename__ = 'ticket_comment'
     
@@ -287,6 +293,7 @@ class TicketCommentSchema(UrdhvaPostgresBase):
     comment_text: Mapped[typing.Optional[str]] = mapped_column("comment_text", String, index=False, nullable=True, default="", primary_key=False, unique=False)
     attachment_path: Mapped[typing.Optional[str]] = mapped_column("attachment_path", String, index=False, nullable=True, default="", primary_key=False, unique=False)
     edited: Mapped[typing.Optional[bool]] = mapped_column("edited", Boolean, index=False, nullable=True, default=False, primary_key=False, unique=False)
+    reply: Mapped[typing.Optional[typing.List[typing.Any]]] = mapped_column("reply", JSONB, index=False, nullable=True, default=None, primary_key=False, unique=False)
 
 
 class TicketCommentCreate(urdhva_base.postgresmodel.BasePostgresModel):
@@ -297,6 +304,7 @@ class TicketCommentCreate(urdhva_base.postgresmodel.BasePostgresModel):
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
     attachment_path: typing.Optional[str] = pydantic.Field("", **{})
     edited: typing.Optional[bool] = pydantic.Field(False, )
+    reply: typing.Optional[typing.List[ReplyCreate]] | None = None
 
     class Config:
         collection_name = 'data_flow'
@@ -314,6 +322,7 @@ class TicketComment(urdhva_base.postgresmodel.PostgresModel):
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
     attachment_path: typing.Optional[str] = pydantic.Field("", **{})
     edited: typing.Optional[bool] = pydantic.Field(False, )
+    reply: typing.Optional[typing.List[ReplyCreate]] | None = None
 
     class Config:
         collection_name = 'data_flow'

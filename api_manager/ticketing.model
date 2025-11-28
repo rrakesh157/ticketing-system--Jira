@@ -172,6 +172,13 @@ Config=>{
 }
 }
 
+Model Reply internal{
+    user_id int
+    comment optional str
+    created_at optional datetime
+
+}
+
 Model TicketComment {
 
     ticket_id  optional int
@@ -179,6 +186,7 @@ Model TicketComment {
     comment_text optional str
     attachment_path optional str
     edited optional bool
+    reply optional list Reply
 
     Action=> create_comment{
 
@@ -186,6 +194,7 @@ Model TicketComment {
             commented_by optional int
             comment_text optional str
             attachment_path optional str
+            
     }
 
     Action=> update_comment{
