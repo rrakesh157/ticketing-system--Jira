@@ -30,22 +30,10 @@ Enum TicketType str{
 }
 
 
-Model Ticket_History internal {
-    description optional str
-    processed_time optional str
-    allocated_time optional str
-    action_msg optional str
-    action_type optional str
-}
-    
-Model Merge_History internal {
-    ticket_id optional str 
-    merge_ticket_id list str
-    comment optional str
-    processed_time optional str
-    allocated_time optional str
-    action_msg optional str
-    action_type optional str
+Enum Type str{
+    Task='Task'
+    Milestone='Milestone'
+    Summary='Summary'
 }
 
 
@@ -73,40 +61,38 @@ Model Ticketing {
 
     merge_status optional bool
 
+    label optional str
+    progress optional int
+    type optional Type
+
     milestone_id optional str
     assignee_id optional str
     reporter_id optional str
 
     parent_ticket_id  optional str  
 
-    estimated_hours optional datetime        
-    total_hours_spent optional datetime
-    due_date optional datetime
+    allocated_hours optional datetime        
     start_date optional datetime
-    end_date optional datetime
+    due_date optional datetime
     
     Action=> create_ticket {
-        
+
         project_id optional str      
         board_id optional str
         workflow_id optional str
         status_id optional str
 
         ticket_status Status
-	    ticket_state State
-	    ticket_severity Severity
+        ticket_state State
+        ticket_severity Severity
+        file_attachment optional list str
 
-	    summary optional str
-	    description optional str
-        comment optional str
+        summary optional str
 
-	    file_attachment optional list str
-	    
-        assignee_id optional str
-        reporter_id optional str
+        parent_ticket_id  optional str  
 
         start_date optional datetime
-	    end_date optional datetime
+        due_date optional datetime
 
     }
 
@@ -118,14 +104,21 @@ Model Ticketing {
 
     Action=> update_ticket {
 
-        update_id str
+        project_id optional str      
+        board_id optional str
+        workflow_id optional str
+        status_id optional str
+
+        update_id int
+
+        ticket_status Status
 	    ticket_state State
         ticket_severity Severity
 
 	    summary optional str
 	    description optional str
 	    comment optional str
-        merge_status optional bool	    
+        merge_status optional bool	   
 	    
         file_attachment optional list str
 
@@ -133,7 +126,7 @@ Model Ticketing {
         assignee_id optional str
 
         start_date optional datetime
-	    end_date optional datetime
+	    due_date optional datetime
 
     }
 
@@ -158,11 +151,13 @@ Model TicketHistory {
         field_name optional str
         old_value optional str
         new_value optional str
+
     }
 
 
 
     Action=> get_ticket_id{
+
         ticket_id str
     }
 
@@ -228,18 +223,20 @@ Model TicketCollaborators {
 
     Action=> create_collabs{
         
-        ticket_id optional str
-        user_id optional list str   
+        ticket_id optional int
+        user_id optional int   
     }
 
-    Action=> get_collabs {
+    Action=> get_collabs{
+
         ticket_id str
     }
 
-    Action=> update_collabs{
+    Action=> delete_collabs{
 
-        ticket_id optional str
-        user_id optional list str         
+        ticket_id optional int
+        user_id optional int 
+
     }
 
     Config=>{
@@ -280,8 +277,6 @@ Model order internal{
 
     ticket_state str
     ticket_status str
-
-
 }
 
 Model WorkflowStatus{
@@ -380,4 +375,26 @@ Model Users {
     crud_operations='read'
         }
 }
+
+Model Projects {
+
+    project_name str
+    description optional str
+    created_by_id optional int
+
+    Action=> create_project {
+
+        project_name str
+        description optional str
+        created_by_id optional int
+  
+    }
+
+    Config=>{
+        foreign_keys='created_by_id=users.id::int;instance_id=projects.created_by_id'
+        crud_operations='read' 
+        }
+    }
+
+
 

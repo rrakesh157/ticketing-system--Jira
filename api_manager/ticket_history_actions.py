@@ -23,9 +23,9 @@ async def ticket_history_create_history(data: ticketing_model.TickethistoryCreat
         params.q = f"id='{data.ticket_id}'"
         params.limit = 1
 
-        ticket_result = await Ticketing.get_all(params,resp_type='plain')
+        result = await Ticketing.get_all(params,resp_type='plain')
 
-        if not ticket_result.get('data',[]):
+        if not result.get('data',[]):
             return {
                 'status':False,
                 "message":"Ticket not found"
@@ -49,7 +49,6 @@ async def ticket_history_create_history(data: ticketing_model.TickethistoryCreat
         
     }
 
-        
     except Exception as e:
         return{
             'status':False,
@@ -64,7 +63,7 @@ async def ticket_history_get_ticket_id(data: ticketing_model.TickethistoryGetTic
         tdata = data.__dict__
         print("tdata",tdata)
         params = QueryParams()
-        params.q = f"id='{data.ticket_id}'"
+        params.q = f"ticket_id='{data.ticket_id}'"
         params.limit = 1
 
         ticket_result = await TicketHistory.get_all(params,resp_type='plain')

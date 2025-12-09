@@ -281,7 +281,7 @@
                     "name": "get_collabs"
                 },
                 {
-                    "name": "update_collabs"
+                    "name": "delete_collabs"
                 }
             ]
         },
@@ -332,7 +332,7 @@
                     "name": "get_collabs"
                 },
                 {
-                    "name": "update_collabs"
+                    "name": "delete_collabs"
                 }
             ]
         },
@@ -656,6 +656,75 @@
                     "name": "sign_in"
                 }
             ]
+        },
+        {
+            "name": "projects",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Projects",
+            "attributes": {},
+            "uris": [
+                "/api/projects/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "create_project"
+                }
+            ]
+        },
+        {
+            "name": "projects_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Projects_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/projects/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "projects_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Projects_admin",
+            "attributes": {},
+            "uris": [
+                "/api/projects/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "create_project"
+                }
+            ]
         }
     ],
     "policies": [
@@ -779,8 +848,8 @@
             "displayName": "get_collabs"
         },
         {
-            "name": "update_collabs",
-            "displayName": "update_collabs"
+            "name": "delete_collabs",
+            "displayName": "delete_collabs"
         },
         {
             "name": "add_workflow",
@@ -825,6 +894,10 @@
         {
             "name": "sign_in",
             "displayName": "sign_in"
+        },
+        {
+            "name": "create_project",
+            "displayName": "create_project"
         }
     ]
 }

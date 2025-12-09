@@ -14,10 +14,10 @@ router = APIRouter(prefix='/boards')
 @router.get('/boards', tags=['Boards'])
 async def get_all_boards(params=Depends(urdhva_base.queryparams.QueryParams)):
     try:
+
         # params = urdhva_base.queryparams.QueryParams()
         # params.q = f'name'
         # params.limit = 1000
-
         # query = "select workflow_id from workflow_status group by workflow_id, name"
         # resp = await WorkflowStatus.get_aggr_data(query,limit=0)
         # resp = resp['data']

@@ -85,3 +85,13 @@ async def get(id: str):
 @router.get('/users', response_model=ticketing_model.UsersGetResp, tags=['Users'])
 async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
     return await ticketing_model.Users.get_all(params, skip_secrets=True)
+
+
+@router.get('/projects/{id}', response_model=ticketing_model.Projects, tags=['Projects'])
+async def get(id: str):
+    return await ticketing_model.Projects.get(id, skip_secrets=True)
+
+
+@router.get('/projects', response_model=ticketing_model.ProjectsGetResp, tags=['Projects'])
+async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
+    return await ticketing_model.Projects.get_all(params, skip_secrets=True)

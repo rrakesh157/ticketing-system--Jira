@@ -36,3 +36,9 @@ class TicketType(str, enum.Enum):
     HOLD = 'TicketOnHold'
     RE = 're'
     OPEN = 'TicketReOpened'
+
+
+class Type(str, enum.Enum):
+    TASK = 'Task'
+    MILESTONE = 'Milestone'
+    SUMMARY = 'Summary'
