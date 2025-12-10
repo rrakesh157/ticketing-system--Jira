@@ -5,12 +5,13 @@ import api_manager
 import uuid
 from ticketing_enum import TicketType, Status, State
 from dateutil import parser
+from datetime import datetime
 import ticketing_model
 from ticketing_model import *
 from fastapi import FastAPI,APIRouter, Form, UploadFile, File,HTTPException
 from datetime import datetime,timedelta
 from typing import Optional
-from urdhva_base import BasePostgresModel
+from urdhva_base import QueryParams
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -40,6 +41,25 @@ app.include_router(router)
 def generate_ticket_id():
     return f"TK-{str(uuid.uuid4())[:6]}"  # TK-a13f92
 
+# def validate_dates(startdate,duedate):
+#     try:
+#         start_date = datetime.strptime(startdate,"%Y-%m-%d")
+#         due_date = datetime.strptime(duedate,"%Y-%m-%d")
+#     except ValueError:
+#         raise ValueError("Dates must be in YYYY-MM-DD format")
+
+#     if start_date >= due_date:
+#         raise ValueError("Start date must be earlier than due date")
+    
+#     if start_date == due_date:
+#         due_date = duedate + timedelta(days=1)
+
+#     return start_date,due_date
+
+def parse_iso(dt_str: str) -> datetime:
+    return datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
+
+
 # Action create_ticket
 @router.post('/create-ticket', tags=['Ticketing'])
 async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketParams):
@@ -51,18 +71,37 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
 
         t_id = generate_ticket_id()
 
-        # creating  the startdate  and duedate
-        startdate = datetime.now()
-        duedate = startdate + timedelta(days=1)
+        # start = parse_iso(data.start_date)
+        # due = parse_iso(data.due_date)
+
+        # if start >= due:
+        #     raise ValueError("Start date must be earlier than due date")
+
+                
+        # checking and creating  the  parent_ticket_id   
+        if tdata['parent_ticket_id']:
+            params = QueryParams()
+            params.q = f"id={data.parent_ticket_id}"
+            params.limit = 1
+            res = await Ticketing.get_all(params,resp_type='plain')
+            if res.get('data',[]):
+                ptid = tdata['parent_ticket_id']
+            else:
+                return {
+                    'status':False,
+                    'message':"Parent ticket not found"
+                }
+        else:
+            ptid = '0'
 
         tdata.update({
             'ticket_id':t_id,
             'ticket_name':f'ticket_name {t_id}', # creating the ticket name
             'ticket_status':data.ticket_status,
-            'start_date':startdate,
-            'due_date':duedate,
+            'start_date':data.start_date,
+            'due_date':data.due_date,
             'ticket_status':Status.OPEN.value,
-            'parent_ticket_id':'0'
+            'parent_ticket_id':ptid
         })
 
         ticket_state_str = tdata.get('ticket_state')
@@ -74,7 +113,7 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
         history = {
                     "ticket_id": result['id'],
                     # "changed_by": "",
-                    "field_name": "ticket",
+                    "field_name": "Ticket",
                     # "old_value": "",
                     "new_value": "Created the card"
                     }
@@ -180,7 +219,7 @@ async def tikt_history(u_id,feild_name,old_val,new_val):
 # Action update_ticket
 @router.post('/update-ticket', tags=['Ticketing'])
 async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketParams):
-    try:
+    try:   
         tdata = data.__dict__
         print(tdata)
 
@@ -277,102 +316,4 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
             "message":str(e)
         }
 
-
-
-
-# # Action create_ticket
-# @router.post('/create-ticket', tags=['Ticketing'])
-# async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketParams):
-
-#     try:
-#         tdata = data.__dict__
-#         print("tdata--->",tdata)
-
-#         # params = urdhva_base.queryparams.QueryParams()
-#         # params.q = f"id='{data.assignee_id}'"
-#         # params.limit = 1
-
-#         # assigne = await Users.get_all(params,resp_type='plain')
-#         # reporter = await Users.get_all(params,resp_type='plain')
-
-#         # assigne_existing = assigne.get('data',[])
-#         # reporter_existing = reporter.get('data',[])
-
-
-#         # if not assigne_existing or reporter_existing:
-#         #     return {
-#         #         'status':False,
-#         #         'message':"User doesnot exist"
-#         #     }
-        
-#         t_id = generate_ticket_id()
-
-#         tdata['ticket_id'] = t_id
-#         tdata['ticket_name'] = f'ticket_name {t_id}' # creating the ticket name
-
-
-#         startdate_str = tdata.get('startdate')
-
-#         # updating the startdate to particular format
-#         # if startdate_str:
-#         #     try:
-#         #         startdate = parser.isoparse(startdate_str)
-#         #         print("startdate1-->",startdate)
-#         #     except Exception:
-#         #         try:
-#         #             startdate = datetime.strptime(startdate,"%Y-%m-%d %H:%M:%S")
-#         #             print("startdate2-->",startdate)
-#         #         except ValueError:
-#         #             try:
-#         #                 startdate = datetime.strptime(startdate,"%Y-%m-%d")
-#         #                 print("startdate3-->",startdate)
-#         #             except ValueError:
-#         #                 startdate = None
-
-
-#         # creating  the startdate  and duedate
-#         startdate = datetime.now()
-#         duedate = startdate + timedelta(days=1)
-
-#         tdata.update({
-#             'ticket_status':data.ticket_status,
-#             'start_date':startdate,
-#             'due_date':duedate,
-#             'ticket_status':Status.OPEN.value,
-#             'parent_ticket_id':'0'
-#             # 'ticket_history': []
-#         })
-
-#         ticket_state_str = tdata.get('ticket_state')
-#         print("ticket_state_str-->",ticket_state_str)
-
-#         # based on ticket state getting action type
-#         # action_type_str = TicketType[ticket_state_str.name].value 
-#         # print("action_type_str-->",action_type_str)
-
-#         # processed_time = datetime.now()
-
-
-#          #inserting data into the table
-#         result = await ticketing_model.TicketingCreate(**tdata).create()
-
-#         history = {
-#                     "ticket_id": result['id'],
-#                     # "changed_by": "",
-#                     "field_name": "ticket",
-#                     # "old_value": "",
-#                     "new_value": "Created the card"
-#                     }
-#         tkt_hist = await TicketHistoryCreate(**history).create()
-#         print("History created")
-
-#         return {
-#             'Message':'Tickets Created Successfully',
-#             'Ticket':tdata,
-#             'id':result['id']
-#         }
-#     except Exception as e:
-#         return {
-#             'error':str(e)
-#         }    
 

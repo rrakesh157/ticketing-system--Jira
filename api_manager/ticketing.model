@@ -88,8 +88,12 @@ Model Ticketing {
         file_attachment optional list str
 
         summary optional str
+        description optional str
 
-        parent_ticket_id  optional str  
+        parent_ticket_id  optional str
+
+        progress optional int
+        type optional Type
 
         start_date optional datetime
         due_date optional datetime
@@ -118,7 +122,12 @@ Model Ticketing {
 	    summary optional str
 	    description optional str
 	    comment optional str
-        merge_status optional bool	   
+
+        merge_status optional bool
+
+        label optional str
+        progress optional int
+        type optional Type  
 	    
         file_attachment optional list str
 
@@ -157,7 +166,7 @@ Model TicketHistory {
 
 
     Action=> get_ticket_id{
-
+    
         ticket_id str
     }
 

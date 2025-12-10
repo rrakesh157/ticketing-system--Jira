@@ -154,7 +154,10 @@ class TicketingCreateTicketParams(pydantic.BaseModel):
     ticket_severity: ticketing_enum.Severity
     file_attachment: typing.Optional[typing.List[str]] = pydantic.Field("", **{})
     summary: typing.Optional[str] = pydantic.Field("", **{})
+    description: typing.Optional[str] = pydantic.Field("", **{})
     parent_ticket_id: typing.Optional[str] = pydantic.Field("", **{})
+    progress: typing.Optional[int] = pydantic.Field(0, **{})
+    type: typing.Optional[ticketing_enum.Type] | None = None
     start_date: typing.Optional[datetime.datetime] | None = None
     due_date: typing.Optional[datetime.datetime] | None = None
 
@@ -185,6 +188,9 @@ class TicketingUpdateTicketParams(pydantic.BaseModel):
     description: typing.Optional[str] = pydantic.Field("", **{})
     comment: typing.Optional[str] = pydantic.Field("", **{})
     merge_status: typing.Optional[bool] = pydantic.Field(False, )
+    label: typing.Optional[str] = pydantic.Field("", **{})
+    progress: typing.Optional[int] = pydantic.Field(0, **{})
+    type: typing.Optional[ticketing_enum.Type] | None = None
     file_attachment: typing.Optional[typing.List[str]] = pydantic.Field("", **{})
     reporter_id: typing.Optional[str] = pydantic.Field("", **{})
     assignee_id: typing.Optional[str] = pydantic.Field("", **{})
