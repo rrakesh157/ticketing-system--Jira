@@ -15,8 +15,6 @@ from urdhva_base import QueryParams
 from fastapi.middleware.cors import CORSMiddleware
 
 
-
-
 app = FastAPI()
 
 router = APIRouter(prefix='/ticketing')
@@ -41,43 +39,17 @@ app.include_router(router)
 def generate_ticket_id():
     return f"TK-{str(uuid.uuid4())[:6]}"  # TK-a13f92
 
-# def validate_dates(startdate,duedate):
-#     try:
-#         start_date = datetime.strptime(startdate,"%Y-%m-%d")
-#         due_date = datetime.strptime(duedate,"%Y-%m-%d")
-#     except ValueError:
-#         raise ValueError("Dates must be in YYYY-MM-DD format")
-
-#     if start_date >= due_date:
-#         raise ValueError("Start date must be earlier than due date")
-    
-#     if start_date == due_date:
-#         due_date = duedate + timedelta(days=1)
-
-#     return start_date,due_date
-
-def parse_iso(dt_str: str) -> datetime:
-    return datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
 
 
 # Action create_ticket
 @router.post('/create-ticket', tags=['Ticketing'])
 async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketParams):
-
     try:
         tdata = data.__dict__
         print("tdata--->",tdata)
 
-
         t_id = generate_ticket_id()
-
-        # start = parse_iso(data.start_date)
-        # due = parse_iso(data.due_date)
-
-        # if start >= due:
-        #     raise ValueError("Start date must be earlier than due date")
-
-                
+   
         # checking and creating  the  parent_ticket_id   
         if tdata['parent_ticket_id']:
             params = QueryParams()
@@ -94,18 +66,31 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
         else:
             ptid = '0'
 
+        #setting the start_date if not given
+        if not data.start_date:
+            startdate = datetime.now()
+        else:
+            startdate = data.start_date
+            
+        #setting the due_date if not given
+        if not data.due_date:
+            duedate = datetime.now() + timedelta(days=1)
+        else:
+            duedate = data.due_date          
+        
+
         tdata.update({
             'ticket_id':t_id,
             'ticket_name':f'ticket_name {t_id}', # creating the ticket name
             'ticket_status':data.ticket_status,
-            'start_date':data.start_date,
-            'due_date':data.due_date,
+            'start_date':startdate,
+            'due_date':duedate,
+            'summary':data.summary,
+            'description':data.description,
             'ticket_status':Status.OPEN.value,
-            'parent_ticket_id':ptid
+            'parent_ticket_id':ptid,
+            'progress':data.progress
         })
-
-        ticket_state_str = tdata.get('ticket_state')
-        print("ticket_state_str-->",ticket_state_str)
 
          #inserting data into the table
         result = await ticketing_model.TicketingCreate(**tdata).create()
@@ -212,7 +197,6 @@ async def tikt_history(u_id,feild_name,old_val,new_val):
                 'old_value':str(old_val),
                 'new_value':str(new_val)
             }
-    
     await TicketHistoryCreate(**tkt_hist).create()
 
 
@@ -229,8 +213,7 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
         params.limit = 1
 
         res = await Ticketing.get_all(params,resp_type='plain')
-
-        print('res>>>>',res)
+        # print('res>>>>',res)
 
         if not res or len(res.get("data",[])) == 0:
             raise HTTPException(status_code=404, detail="Ticket not Found")
@@ -242,31 +225,39 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
                 "status":False,
                 "message":"Ticket not found"
             }
-        
-        # validating user is present or not
-        params.q = f"id={data.assignee_id}"
 
-        assigne = await Users.get_all(params,resp_type='plain')
-        reporter = await Users.get_all(params,resp_type='plain')
-
-        assigne_existing = assigne.get('data',[])[0]
-
-        reporter_existing = reporter.get('data',[])[0]
-        # reporter_name = reporter_existing['first_name'] +' '+ reporter_existing['last_name']
-        # print('reporter_name>>>>',reporter_name)
-
-
-        if not assigne_existing or not reporter_existing:
-            return {
-                'status':False,
-                'message':"employee doesnot exist"
-            }
-        
         #below is the logic for, if any changes are made storing it in ticket history table
 
-        #closing the ticket satet if it is in ['Resolved','Cancelled']
-        if data.ticket_state in ['Resolved','Cancelled']:
-            data.ticket_status = 'Close'
+
+        # validating assignee is present or not
+        if data.assignee_id:
+            params.q = f"id={data.assignee_id}"
+            assigne = await Users.get_all(params,resp_type='plain')
+
+            print('assigne',assigne)
+
+            # assigne_existing = assigne.get('data',[])
+            if not assigne or len(assigne.get("data",[])) == 0:
+                raise HTTPException(status_code=404, detail="Assignee not Found")
+            
+            #creating description history
+            if result['assignee_id'] != data.assignee_id:
+                await tikt_history(data.update_id,'Assignee',result['assignee_id'],data.assignee_id)
+            
+
+        # validating reporter is present or not
+        if data.reporter_id:
+            params.q = f"id={data.reporter_id}"
+            reporter = await Users.get_all(params,resp_type='plain')
+            # reporter_existing = reporter.get('data',[])
+
+            if not reporter or len(reporter.get("data",[])) == 0:
+                raise HTTPException(status_code=404, detail="Reporter not Found")
+            
+            #creating reporter history
+            if result['reporter_id'] != data.reporter_id:
+                await tikt_history(data.update_id,'Reporter',result['reporter_id'],data.reporter_id)
+            
 
         #creating summary history
         if result['summary'] != data.summary:
@@ -276,31 +267,54 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
         if result['description'] != data.description:
             await tikt_history(data.update_id,'Description',result['description'],data.description)
 
-        #creating description history
-        if result['assignee_id'] != data.assignee_id:
+        #creating ticket_status history
+        if result['ticket_status'] != data.ticket_status:
+            await tikt_history(data.update_id,'Status',result['ticket_status'],data.ticket_status)
 
-            new_assigne_name = assigne_existing['first_name'] +' '+ assigne_existing['last_name']
-            # params = urdhva_base.queryparams.QueryParams()
-            params.q = f"id={result['assignee_id']}"
-            new_assigne = await Users.get_all(params,resp_type='plain')
-            res = new_assigne.get('data',[])[0]
-            old_assigne_name = res['first_name']+' '+ res['last_name']
-            print('old_assigne_name>>',old_assigne_name)
-            print('new_assigne_name>>',new_assigne_name)
+        #creating ticket_severity history
+        if result['ticket_severity'] != data.ticket_severity:
+            await tikt_history(data.update_id,'Severity',result['ticket_severity'],data.ticket_severity.value)
 
-            await tikt_history(data.update_id,'Assignee',result['assignee_id'],data.assignee_id)
+        #creating ticket_state history
+        if result['ticket_state'] != data.ticket_state:
+            await tikt_history(data.update_id,'State',result['ticket_state'],data.ticket_state.value)
 
-        #creating reporter history
-        if result['reporter_id'] != data.reporter_id:
-            await tikt_history(data.update_id,'Reporter',result['reporter_id'],data.reporter_id)
-        
+        #creating parent_ticket_id history
+        if result['parent_ticket_id'] != data.parent_ticket_id:
+            await tikt_history(data.update_id,'Parent_Ticket',result['parent_ticket_id'],data.parent_ticket_id)
+           
+
+        dt_str = data.due_date
+        dt2_str = result['due_date']
+
+        dt1 = datetime.fromisoformat(str(dt_str))   # convert string to datetime
+        dt2 = datetime.fromisoformat(str(dt2_str))
+
+        new_duedate = dt1.date() #extract date
+        old_duedate = dt2.date()
+
+        print('dates>>>>',new_duedate,old_duedate)
+
         #creating due_date history
-        if result['due_date'] != data.due_date:
+        if old_duedate != new_duedate:
             await tikt_history(data.update_id,'Due_Date',result['due_date'],data.due_date)
 
-        #creating file_attachment history
-        if result['file_attachment'] != data.file_attachment:
-            await tikt_history(data.update_id,'file_attachment',result['file_attachment'],data.file_attachment)
+        # #creating file_attachment history
+        # if result['file_attachment'] != data.file_attachment:
+        #     await tikt_history(data.update_id,'file_attachment',result['file_attachment'],data.file_attachment)
+
+
+        #changing the ticket_status based on the ticket_state
+        if data.ticket_state in ['Resolved','Cancelled']:
+            data.ticket_status = 'Close'
+
+        elif data.ticket_state in ['ToDo','Re Open']:
+            data.ticket_status = 'Open'
+        
+        else:
+            data.ticket_status = 'Pending'
+
+
 
         # updating the ticket with new values
         res = await Ticketing(**{"id":data.update_id,**tdata}).modify() 
@@ -316,4 +330,25 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
             "message":str(e)
         }
 
+                # new_assigne_name = assigne_existing['first_name'] +' '+ assigne_existing['last_name']
+                # # params = urdhva_base.queryparams.QueryParams()
+                # params.q = f"id={result['assignee_id']}"
+                # new_assigne = await Users.get_all(params,resp_type='plain')
+                # res = new_assigne.get('data',[])[0]
+                # old_assigne_name = res['first_name']+' '+ res['last_name']
+                # print('old_assigne_name>>',old_assigne_name)
+                # print('new_assigne_name>>',new_assigne_name)
+
+
+# ticket_history 
+	# Ticket creation
+	# Summary
+	# Description
+	# Ticket State
+	# Ticket Status
+	# Ticket Severity
+	# Assignee
+	# Reporter
+	# Parent_ticket
+	# Due date
 

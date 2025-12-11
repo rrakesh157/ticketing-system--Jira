@@ -725,6 +725,75 @@
                     "name": "create_project"
                 }
             ]
+        },
+        {
+            "name": "milestone",
+            "type": "all",
+            "ownerManagedAccess": false,
+            "displayName": "Milestone",
+            "attributes": {},
+            "uris": [
+                "/api/milestone/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "create_milestone"
+                }
+            ]
+        },
+        {
+            "name": "milestone_readOnly",
+            "type": "readOnly",
+            "ownerManagedAccess": false,
+            "displayName": "Milestone_readOnly",
+            "attributes": {},
+            "uris": [
+                "/api/milestone/*"
+            ],
+            "scopes": [
+                {
+                    "name": "read"
+                }
+            ]
+        },
+        {
+            "name": "milestone_admin",
+            "type": "admin",
+            "ownerManagedAccess": false,
+            "displayName": "Milestone_admin",
+            "attributes": {},
+            "uris": [
+                "/api/milestone/*"
+            ],
+            "scopes": [
+                {
+                    "name": "create"
+                },
+                {
+                    "name": "update"
+                },
+                {
+                    "name": "read"
+                },
+                {
+                    "name": "delete"
+                },
+                {
+                    "name": "create_milestone"
+                }
+            ]
         }
     ],
     "policies": [
@@ -898,6 +967,10 @@
         {
             "name": "create_project",
             "displayName": "create_project"
+        },
+        {
+            "name": "create_milestone",
+            "displayName": "create_milestone"
         }
     ]
 }

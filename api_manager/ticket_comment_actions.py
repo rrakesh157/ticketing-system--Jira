@@ -93,6 +93,7 @@ async def ticket_comment_update_comment(data: ticketing_model.TicketcommentUpdat
                 "status":False,
                 "message":"Comment not found"
             }
+        tdata['edited'] = True
         res = await TicketComment(**{'id':data.comment_id,**tdata}).modify()
         return {
                     "status": True,

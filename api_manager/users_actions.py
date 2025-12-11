@@ -143,17 +143,18 @@ async def users_sign_in(data: ticketing_model.UsersSignInParams):
         print(existing)
 
         if not existing:
-            
             return {
                 "status":False,
                 "message":"User does not exist"
             }
+        
         verify_pass = verify_password(data.password,existing[0]['password_hash'])
         if not verify_pass:
             return {
                 "status":False,
                 "message":"Incorrect password"
-            }
+                }
+        
         
         return {
             'statu':True,
@@ -201,30 +202,33 @@ async def users_sign_up(data: ticketing_model.UsersSignUpParams):
                 "status":False,
                 "message":"Password incorrect"
             }
+        
+        if  len(data.phone_number) != 10:
+            return {
+                "status":False,
+                "message":"Give valid Phone number"
+                }
 
         
-        if len(data.phone_number) == 10:
-            udata.update({
-                "first_name":data.first_name,
-                "last_name":data.last_name,
-                'user_id':f'UI-{str(uuid.uuid4())[:5]}',
-                "Password_hash":get_password_hash(data.password),
-                "phone_number":data.phone_number
-                })
-            
-            resp = await Users(id=existing[0]['id'],**udata).modify()
+        
+        udata.update({
+            "first_name":data.first_name,
+            "last_name":data.last_name,
+            'user_id':f'UI-{str(uuid.uuid4())[:5]}',
+            "Password_hash":get_password_hash(data.password),
+            "phone_number":data.phone_number
+            })
+        
+        resp = await Users(id=existing[0]['id'],**udata).modify()
 
-            print("resp",resp)
+        print("resp",resp)
 
 
-            return {
-                    "status":True,
-                    "message":f"User {data.first_name} created successfully"
-                }
         return {
-            "status":False,
-            "message":"phone number must be 10 digit"
-        }
+                "status":True,
+                "message":f"User {data.first_name} created successfully"
+            }
+        
     
     except Exception as e:
         return {

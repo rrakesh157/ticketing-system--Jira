@@ -39,6 +39,6 @@ class TicketType(str, enum.Enum):
 
 
 class Type(str, enum.Enum):
-    TASK = 'Task'
-    MILESTONE = 'Milestone'
-    SUMMARY = 'Summary'
+    TASK = 'task'
+    MILESTONE = 'milestone'
+    SUMMARY = 'summary'

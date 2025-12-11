@@ -187,6 +187,7 @@ class TicketingUpdateTicketParams(pydantic.BaseModel):
     summary: typing.Optional[str] = pydantic.Field("", **{})
     description: typing.Optional[str] = pydantic.Field("", **{})
     comment: typing.Optional[str] = pydantic.Field("", **{})
+    parent_ticket_id: typing.Optional[str] = pydantic.Field("", **{})
     merge_status: typing.Optional[bool] = pydantic.Field(False, )
     label: typing.Optional[str] = pydantic.Field("", **{})
     progress: typing.Optional[int] = pydantic.Field(0, **{})
@@ -785,6 +786,68 @@ class ProjectsCreateProjectParams(pydantic.BaseModel):
     project_name: str
     description: typing.Optional[str] = pydantic.Field("", **{})
     created_by_id: typing.Optional[int] = pydantic.Field(0, **{})
+
+    class Config:
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+
+
+class MilestoneSchema(UrdhvaPostgresBase):
+    __tablename__ = 'milestone'
+    
+    project_id: Mapped[int] = mapped_column("project_id", Integer, ForeignKey('projects.id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
+    name: Mapped[typing.Optional[str]] = mapped_column("name", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+    description: Mapped[typing.Optional[str]] = mapped_column("description", String, index=False, nullable=True, default="", primary_key=False, unique=False)
+    start_date: Mapped[typing.Optional[datetime.datetime]] = mapped_column("start_date", DateTime(timezone=True), index=False, nullable=True, default=None, primary_key=False, unique=False)
+    end_date: Mapped[typing.Optional[datetime.datetime]] = mapped_column("end_date", DateTime(timezone=True), index=False, nullable=True, default=None, primary_key=False, unique=False)
+
+
+class MilestoneCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'milestone'
+    
+    project_id: int
+    name: typing.Optional[str] = pydantic.Field("", **{})
+    description: typing.Optional[str] = pydantic.Field("", **{})
+    start_date: typing.Optional[datetime.datetime] | None = None
+    end_date: typing.Optional[datetime.datetime] | None = None
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = MilestoneSchema
+        upsert_keys = []
+
+
+class Milestone(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'milestone'
+    
+    project_id: typing.Optional[int] | None = None
+    name: typing.Optional[str] = pydantic.Field("", **{})
+    description: typing.Optional[str] = pydantic.Field("", **{})
+    start_date: typing.Optional[datetime.datetime] | None = None
+    end_date: typing.Optional[datetime.datetime] | None = None
+
+    class Config:
+        collection_name = 'data_flow'
+        if urdhva_base.settings.disable_api_extra_inputs:
+            extra = "forbid"  # Disallow extra fields
+        schema_class = MilestoneSchema
+        upsert_keys = []
+
+
+class MilestoneGetResp(pydantic.BaseModel):
+    data: typing.List[Milestone]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
+class MilestoneCreateMilestoneParams(pydantic.BaseModel):
+    project_id: int
+    name: typing.Optional[str] = pydantic.Field("", **{})
+    description: typing.Optional[str] = pydantic.Field("", **{})
+    start_date: typing.Optional[datetime.datetime] | None = None
+    end_date: typing.Optional[datetime.datetime] | None = None
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:

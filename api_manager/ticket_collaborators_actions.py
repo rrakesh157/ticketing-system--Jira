@@ -80,13 +80,14 @@ async def ticket_collaborators_get_collabs(data: ticketing_model.Ticketcollabora
                 'status':False,
                 "message":"Ticket Id not found"
             }
-        qurey = f"select * from ticket_collaborators where ticket_id={data.ticket_id}"
+        qurey = f"select ticket_id,user_id,id from ticket_collaborators where ticket_id={data.ticket_id}"
         res = await TicketCollaborators.get_aggr_data(qurey,limit=0)
         print(res)
         return {
             "status":True,
             "data":res
         }
+
     except Exception as e:
         return{
             'status':False,

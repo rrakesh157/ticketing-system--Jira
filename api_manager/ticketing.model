@@ -31,9 +31,9 @@ Enum TicketType str{
 
 
 Enum Type str{
-    Task='Task'
-    Milestone='Milestone'
-    Summary='Summary'
+    task='task'
+    milestone='milestone'
+    summary='summary'
 }
 
 
@@ -122,6 +122,8 @@ Model Ticketing {
 	    summary optional str
 	    description optional str
 	    comment optional str
+
+        parent_ticket_id  optional str
 
         merge_status optional bool
 
@@ -405,5 +407,27 @@ Model Projects {
         }
     }
 
+Model Milestone {
+
+    project_id int
+    name optional str
+    description optional str
+    start_date optional datetime
+    end_date optional datetime
+
+    Action=> create_milestone{
+        project_id int
+        name optional str
+        description optional str
+        start_date optional datetime
+        end_date optional datetime
+    }
+    
+    Config=>{
+        foreign_keys='project_id=projects.id::int;instance_id=milestone.project_id'
+        crud_operations='read'
+    }
+    
+    }
 
 

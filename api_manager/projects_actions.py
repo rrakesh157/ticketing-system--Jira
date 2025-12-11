@@ -45,7 +45,6 @@ async def projects_create_project(data: ticketing_model.ProjectsCreateProjectPar
         return {
             'status':True,
             'message':'Project added successfully'
-            
         }
 
 
