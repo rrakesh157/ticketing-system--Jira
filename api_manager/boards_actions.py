@@ -185,7 +185,4 @@ async def boards_update_board(data: ticketing_model.BoardsUpdateBoardParams):
         }
 
 
-# Action get_board_tickets
-@router.post('/get-board-tickets', tags=['Boards'])
-async def boards_get_board_tickets(data: ticketing_model.BoardsGetBoardTicketsParams):
-    ...
+

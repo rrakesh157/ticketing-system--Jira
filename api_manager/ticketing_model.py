@@ -192,6 +192,7 @@ class TicketingUpdateTicketParams(pydantic.BaseModel):
     label: typing.Optional[str] = pydantic.Field("", **{})
     progress: typing.Optional[int] = pydantic.Field(0, **{})
     type: typing.Optional[ticketing_enum.Type] | None = None
+    milestone_id: typing.Optional[str] = pydantic.Field("", **{})
     file_attachment: typing.Optional[typing.List[str]] = pydantic.Field("", **{})
     reporter_id: typing.Optional[str] = pydantic.Field("", **{})
     assignee_id: typing.Optional[str] = pydantic.Field("", **{})
@@ -273,98 +274,79 @@ class TickethistoryGetTicketIdParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
-class ReplyCreate(pydantic.BaseModel):
-    user_id: int
-    comment: typing.Optional[str] = pydantic.Field("", **{})
-    created_at: typing.Optional[datetime.datetime] | None = None
-
-
-class TicketCommentSchema(UrdhvaPostgresBase):
-    __tablename__ = 'ticket_comment'
+class TicketCommentsSchema(UrdhvaPostgresBase):
+    __tablename__ = 'ticket_comments'
     
-    ticket_id: Mapped[typing.Optional[int]] = mapped_column("ticket_id", Integer, ForeignKey('ticketing.id'), index=False, nullable=True, default=None, primary_key=False, unique=False)
-    commented_by: Mapped[typing.Optional[int]] = mapped_column("commented_by", Integer, index=False, nullable=True, default=0, primary_key=False, unique=False)
+    ticket_id: Mapped[int] = mapped_column("ticket_id", Integer, ForeignKey('ticketing.id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
+    user_id: Mapped[int] = mapped_column("user_id", Integer, index=False, nullable=False, default=None, primary_key=False, unique=False)
+    parent_id: Mapped[int] = mapped_column("parent_id", Integer, index=False, nullable=False, default=None, primary_key=False, unique=False)
     comment_text: Mapped[typing.Optional[str]] = mapped_column("comment_text", String, index=False, nullable=True, default="", primary_key=False, unique=False)
-    attachment_path: Mapped[typing.Optional[str]] = mapped_column("attachment_path", String, index=False, nullable=True, default="", primary_key=False, unique=False)
     edited: Mapped[typing.Optional[bool]] = mapped_column("edited", Boolean, index=False, nullable=True, default=False, primary_key=False, unique=False)
-    reply: Mapped[typing.Optional[typing.List[typing.Any]]] = mapped_column("reply", JSONB, index=False, nullable=True, default=None, primary_key=False, unique=False)
 
 
-class TicketCommentCreate(urdhva_base.postgresmodel.BasePostgresModel):
-    __tablename__ = 'ticket_comment'
+class TicketCommentsCreate(urdhva_base.postgresmodel.BasePostgresModel):
+    __tablename__ = 'ticket_comments'
     
-    ticket_id: typing.Optional[int] = pydantic.Field(0, **{})
-    commented_by: typing.Optional[int] = pydantic.Field(0, **{})
+    ticket_id: int
+    user_id: int
+    parent_id: int
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
-    attachment_path: typing.Optional[str] = pydantic.Field("", **{})
     edited: typing.Optional[bool] = pydantic.Field(False, )
-    reply: typing.Optional[typing.List[ReplyCreate]] | None = None
 
     class Config:
         collection_name = 'data_flow'
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
-        schema_class = TicketCommentSchema
+        schema_class = TicketCommentsSchema
         upsert_keys = []
 
 
-class TicketComment(urdhva_base.postgresmodel.PostgresModel):
-    __tablename__ = 'ticket_comment'
+class TicketComments(urdhva_base.postgresmodel.PostgresModel):
+    __tablename__ = 'ticket_comments'
     
-    ticket_id: typing.Optional[int] = pydantic.Field(0, **{})
-    commented_by: typing.Optional[int] = pydantic.Field(0, **{})
+    ticket_id: typing.Optional[int] | None = None
+    user_id: typing.Optional[int] | None = None
+    parent_id: typing.Optional[int] | None = None
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
-    attachment_path: typing.Optional[str] = pydantic.Field("", **{})
     edited: typing.Optional[bool] = pydantic.Field(False, )
-    reply: typing.Optional[typing.List[ReplyCreate]] | None = None
 
     class Config:
         collection_name = 'data_flow'
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
-        schema_class = TicketCommentSchema
+        schema_class = TicketCommentsSchema
         upsert_keys = []
 
 
-class TicketCommentGetResp(pydantic.BaseModel):
-    data: typing.List[TicketComment]
+class TicketCommentsGetResp(pydantic.BaseModel):
+    data: typing.List[TicketComments]
     total: int = pydantic.Field(0)
     count: int = pydantic.Field(0)
 
 
-class TicketcommentCreateCommentParams(pydantic.BaseModel):
-    ticket_id: typing.Optional[int] = pydantic.Field(0, **{})
-    commented_by: typing.Optional[int] = pydantic.Field(0, **{})
+class TicketcommentsCreateCommentParams(pydantic.BaseModel):
+    ticket_id: int
+    user_id: int
+    parent_id: typing.Optional[int] = pydantic.Field(0, **{})
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
-    attachment_path: typing.Optional[str] = pydantic.Field("", **{})
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
 
 
-class TicketcommentUpdateCommentParams(pydantic.BaseModel):
+class TicketcommentsUpdateCommentParams(pydantic.BaseModel):
     comment_id: typing.Optional[int] = pydantic.Field(0, **{})
     commented_by: typing.Optional[int] = pydantic.Field(0, **{})
     comment_text: typing.Optional[str] = pydantic.Field("", **{})
-    attachment_path: typing.Optional[str] = pydantic.Field("", **{})
-    edited: typing.Optional[bool] = pydantic.Field(False, )
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
 
 
-class TicketcommentDeleteCommentParams(pydantic.BaseModel):
-    comment_id: str
-
-    class Config:
-        if urdhva_base.settings.disable_api_extra_inputs:
-            extra = "forbid"  # Disallow extra fields
-
-
-class TicketcommentGetCommentsParams(pydantic.BaseModel):
-    ticket_id: str
+class TicketcommentsDeleteCommentParams(pydantic.BaseModel):
+    comment_id: int
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:
@@ -792,62 +774,19 @@ class ProjectsCreateProjectParams(pydantic.BaseModel):
             extra = "forbid"  # Disallow extra fields
 
 
-class MilestoneSchema(UrdhvaPostgresBase):
-    __tablename__ = 'milestone'
-    
-    project_id: Mapped[int] = mapped_column("project_id", Integer, ForeignKey('projects.id'), index=False, nullable=False, default=None, primary_key=False, unique=False)
-    name: Mapped[typing.Optional[str]] = mapped_column("name", String, index=False, nullable=True, default="", primary_key=False, unique=False)
-    description: Mapped[typing.Optional[str]] = mapped_column("description", String, index=False, nullable=True, default="", primary_key=False, unique=False)
-    start_date: Mapped[typing.Optional[datetime.datetime]] = mapped_column("start_date", DateTime(timezone=True), index=False, nullable=True, default=None, primary_key=False, unique=False)
-    end_date: Mapped[typing.Optional[datetime.datetime]] = mapped_column("end_date", DateTime(timezone=True), index=False, nullable=True, default=None, primary_key=False, unique=False)
-
-
-class MilestoneCreate(urdhva_base.postgresmodel.BasePostgresModel):
-    __tablename__ = 'milestone'
-    
-    project_id: int
-    name: typing.Optional[str] = pydantic.Field("", **{})
+class ProjectsUpdateProjectParams(pydantic.BaseModel):
+    project_id: typing.Optional[int] = pydantic.Field(0, **{})
+    project_name: str
     description: typing.Optional[str] = pydantic.Field("", **{})
-    start_date: typing.Optional[datetime.datetime] | None = None
-    end_date: typing.Optional[datetime.datetime] | None = None
+    created_by_id: typing.Optional[int] = pydantic.Field(0, **{})
 
     class Config:
-        collection_name = 'data_flow'
         if urdhva_base.settings.disable_api_extra_inputs:
             extra = "forbid"  # Disallow extra fields
-        schema_class = MilestoneSchema
-        upsert_keys = []
 
 
-class Milestone(urdhva_base.postgresmodel.PostgresModel):
-    __tablename__ = 'milestone'
-    
-    project_id: typing.Optional[int] | None = None
-    name: typing.Optional[str] = pydantic.Field("", **{})
-    description: typing.Optional[str] = pydantic.Field("", **{})
-    start_date: typing.Optional[datetime.datetime] | None = None
-    end_date: typing.Optional[datetime.datetime] | None = None
-
-    class Config:
-        collection_name = 'data_flow'
-        if urdhva_base.settings.disable_api_extra_inputs:
-            extra = "forbid"  # Disallow extra fields
-        schema_class = MilestoneSchema
-        upsert_keys = []
-
-
-class MilestoneGetResp(pydantic.BaseModel):
-    data: typing.List[Milestone]
-    total: int = pydantic.Field(0)
-    count: int = pydantic.Field(0)
-
-
-class MilestoneCreateMilestoneParams(pydantic.BaseModel):
-    project_id: int
-    name: typing.Optional[str] = pydantic.Field("", **{})
-    description: typing.Optional[str] = pydantic.Field("", **{})
-    start_date: typing.Optional[datetime.datetime] | None = None
-    end_date: typing.Optional[datetime.datetime] | None = None
+class ProjectsDeleteProjectParams(pydantic.BaseModel):
+    project_id: typing.Optional[int] = pydantic.Field(0, **{})
 
     class Config:
         if urdhva_base.settings.disable_api_extra_inputs:

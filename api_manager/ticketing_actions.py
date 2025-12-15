@@ -95,6 +95,8 @@ async def ticketing_create_ticket(data: ticketing_model.TicketingCreateTicketPar
          #inserting data into the table
         result = await ticketing_model.TicketingCreate(**tdata).create()
 
+
+        #creating history when new ticket is inserted
         history = {
                     "ticket_id": result['id'],
                     # "changed_by": "",
@@ -170,18 +172,19 @@ async def ticketing_attach_file(
             id = result.get('data',[])[0]['id']
             print("iddddddddd",id)
 
-            
+        
             await Ticketing(**{"id":id,**attachment_file}).modify()# updaiting the file attachments
 
 
-        return {
-            "status":True,
-            "message":f"File {uploadfile.filename} saved successfully",
-            "file_attachment":temp_file_path,
-            "file_attachment_name":uploadfile.filename,
-            "file_attachment_id":file_uuid,
-            "content_type":uploadfile.content_type
-        }
+            return {
+                "status":True,
+                "message":f"File {uploadfile.filename} saved successfully",
+                "file_attachment":temp_file_path,
+                "file_attachment_name":uploadfile.filename,
+                "file_attachment_id":file_uuid,
+                "content_type":uploadfile.content_type
+            }
+        
 
     except Exception as e:
         return {
@@ -220,12 +223,14 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
                 
         result = res["data"][0]
 
+        print("result>>>>>>>>",result)
+
         if not result: 
             return {
                 "status":False,
                 "message":"Ticket not found"
             }
-
+        
         #below is the logic for, if any changes are made storing it in ticket history table
 
 
@@ -351,4 +356,167 @@ async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketPar
 	# Reporter
 	# Parent_ticket
 	# Due date
+
+
+# # Action update_ticket
+# @router.post('/update-ticket', tags=['Ticketing'])
+# async def ticketing_update_ticket(data: ticketing_model.TicketingUpdateTicketParams):
+#     try:   
+#         tdata = data.__dict__
+#         print(tdata)
+
+#         #To fetch the ticket
+#         params = urdhva_base.queryparams.QueryParams()
+#         params.q = f"id = {data.update_id}"
+#         params.limit = 1
+
+#         res = await Ticketing.get_all(params,resp_type='plain')
+#         # print('res>>>>',res)
+
+#         if not res or len(res.get("data",[])) == 0:
+#             raise HTTPException(status_code=404, detail="Ticket not Found")
+                
+#         result = res["data"][0]
+
+#         if not result: 
+#             return {
+#                 "status":False,
+#                 "message":"Ticket not found"
+#             }
+        
+#         update_data = data.dict(exclude_unset=True)
+
+#         # 3. Update only those fields
+#         for field, value in update_data.items():
+#             setattr(result, field, value)
+
+#         print('update_data>>>>>>>',update_data)
+            
+        #below is the logic for, if any changes are made storing it in ticket history table
+
+
+        # # validating assignee is present or not
+        # if data.assignee_id:
+            
+        #     params.q = f"id={data.assignee_id}"
+        #     assigne = await Users.get_all(params,resp_type='plain')
+
+        #     print('assigne',assigne)
+
+        #     # assigne_existing = assigne.get('data',[])
+        #     if not assigne or len(assigne.get("data",[])) == 0:
+        #         raise HTTPException(status_code=404, detail="Assignee not Found")
+            
+        #     #creating description history
+        #     if result['assignee_id'] != data.assignee_id:
+        #         await tikt_history(data.update_id,'Assignee',result['assignee_id'],data.assignee_id)
+        #     u_assigne = data.assignee_id
+
+        # else:
+        #     u_assigne = result['assignee_id']
+            
+
+        # # validating reporter is present or not
+        # if data.reporter_id:
+        #     params.q = f"id={data.reporter_id}"
+        #     reporter = await Users.get_all(params,resp_type='plain')
+        #     # reporter_existing = reporter.get('data',[])
+
+        #     if not reporter or len(reporter.get("data",[])) == 0:
+        #         raise HTTPException(status_code=404, detail="Reporter not Found")
+            
+        #     #creating reporter history
+        #     if result['reporter_id'] != data.reporter_id:
+        #         await tikt_history(data.update_id,'Reporter',result['reporter_id'],data.reporter_id)
+        #     u_reporter = data.reporter_id
+        
+        # else:
+        #     u_reporter = result['reporter_id']
+            
+
+        # #creating summary history
+        # if data.summary:
+        #     if result['summary'] != data.summary:
+        #         await tikt_history(data.update_id,'Summary',result['summary'],data.summary)
+        #         u_summary = data.summary
+        # else:
+        #     u_summary = result['summary']
+            
+        # #creating description history
+        # if data.description:
+        #     if result['description'] != data.description:
+        #         await tikt_history(data.update_id,'Description',result['description'],data.description)
+        #         u_description = data.description
+        # else:
+        #     u_description = result['description']
+
+        # #creating ticket_status history
+        # if data.ticket_status:
+        #     if data.ticket_status:
+        #         if result['ticket_status'] != data.ticket_status:
+        #             await tikt_history(data.update_id,'Status',result['ticket_status'],data.ticket_status)
+        #         u_status = data.ticket_status
+        # else:
+        #     u_status = result['ticket_status']
+        # #creating ticket_severity history
+        # if result['ticket_severity'] != data.ticket_severity:
+        #     await tikt_history(data.update_id,'Severity',result['ticket_severity'],data.ticket_severity.value)
+
+        # #creating ticket_state history
+        # if result['ticket_state'] != data.ticket_state:
+        #     await tikt_history(data.update_id,'State',result['ticket_state'],data.ticket_state.value)
+
+        # #creating parent_ticket_id history
+        # if result['parent_ticket_id'] != data.parent_ticket_id:
+        #     await tikt_history(data.update_id,'Parent_Ticket',result['parent_ticket_id'],data.parent_ticket_id)
+           
+
+        # dt_str = data.due_date
+        # dt2_str = result['due_date']
+
+        # dt1 = datetime.fromisoformat(str(dt_str))   # convert string to datetime
+        # dt2 = datetime.fromisoformat(str(dt2_str))
+
+        # new_duedate = dt1.date() #extract date
+        # old_duedate = dt2.date()
+
+        # print('dates>>>>',new_duedate,old_duedate)
+
+        # #creating due_date history
+        # if old_duedate != new_duedate:
+        #     await tikt_history(data.update_id,'Due_Date',result['due_date'],data.due_date)
+
+        # #creating file_attachment history
+        # if result['file_attachment'] != data.file_attachment:
+        #     await tikt_history(data.update_id,'file_attachment',result['file_attachment'],data.file_attachment)
+
+
+        # #changing the ticket_status based on the ticket_state
+        # if data.ticket_state in ['Resolved','Cancelled']:
+        #     data.ticket_status = 'Close'
+
+        # elif data.ticket_state in ['ToDo','Re Open']:
+        #     data.ticket_status = 'Open'
+        
+        # else:
+        #     data.ticket_status = 'Pending'
+
+
+
+        # updating the ticket with new values
+        # res = await Ticketing(**{"id":data.update_id,**tdata}).modify() 
+    #     tdata.pop('update_id')
+    #     return {
+    #         "status": True,
+    #         "message": "Ticket updated successfully",
+    #     }
+    
+    # except Exception as e:
+    #     return {
+    #         "status":False,
+    #         "message":str(e)
+    #     }
+
+
+
 

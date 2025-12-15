@@ -163,13 +163,13 @@
             ]
         },
         {
-            "name": "ticketcomment",
+            "name": "ticketcomments",
             "type": "all",
             "ownerManagedAccess": false,
-            "displayName": "TicketComment",
+            "displayName": "TicketComments",
             "attributes": {},
             "uris": [
-                "/api/ticketcomment/*"
+                "/api/ticketcomments/*"
             ],
             "scopes": [
                 {
@@ -192,38 +192,32 @@
                 },
                 {
                     "name": "delete_comment"
-                },
-                {
-                    "name": "get_comments"
                 }
             ]
         },
         {
-            "name": "ticketcomment_readOnly",
+            "name": "ticketcomments_readOnly",
             "type": "readOnly",
             "ownerManagedAccess": false,
-            "displayName": "TicketComment_readOnly",
+            "displayName": "TicketComments_readOnly",
             "attributes": {},
             "uris": [
-                "/api/ticketcomment/*"
+                "/api/ticketcomments/*"
             ],
             "scopes": [
                 {
                     "name": "read"
-                },
-                {
-                    "name": "get_comments"
                 }
             ]
         },
         {
-            "name": "ticketcomment_admin",
+            "name": "ticketcomments_admin",
             "type": "admin",
             "ownerManagedAccess": false,
-            "displayName": "TicketComment_admin",
+            "displayName": "TicketComments_admin",
             "attributes": {},
             "uris": [
-                "/api/ticketcomment/*"
+                "/api/ticketcomments/*"
             ],
             "scopes": [
                 {
@@ -246,9 +240,6 @@
                 },
                 {
                     "name": "delete_comment"
-                },
-                {
-                    "name": "get_comments"
                 }
             ]
         },
@@ -681,6 +672,12 @@
                 },
                 {
                     "name": "create_project"
+                },
+                {
+                    "name": "update_project"
+                },
+                {
+                    "name": "delete_project"
                 }
             ]
         },
@@ -723,75 +720,12 @@
                 },
                 {
                     "name": "create_project"
-                }
-            ]
-        },
-        {
-            "name": "milestone",
-            "type": "all",
-            "ownerManagedAccess": false,
-            "displayName": "Milestone",
-            "attributes": {},
-            "uris": [
-                "/api/milestone/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
                 },
                 {
-                    "name": "update"
+                    "name": "update_project"
                 },
                 {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "create_milestone"
-                }
-            ]
-        },
-        {
-            "name": "milestone_readOnly",
-            "type": "readOnly",
-            "ownerManagedAccess": false,
-            "displayName": "Milestone_readOnly",
-            "attributes": {},
-            "uris": [
-                "/api/milestone/*"
-            ],
-            "scopes": [
-                {
-                    "name": "read"
-                }
-            ]
-        },
-        {
-            "name": "milestone_admin",
-            "type": "admin",
-            "ownerManagedAccess": false,
-            "displayName": "Milestone_admin",
-            "attributes": {},
-            "uris": [
-                "/api/milestone/*"
-            ],
-            "scopes": [
-                {
-                    "name": "create"
-                },
-                {
-                    "name": "update"
-                },
-                {
-                    "name": "read"
-                },
-                {
-                    "name": "delete"
-                },
-                {
-                    "name": "create_milestone"
+                    "name": "delete_project"
                 }
             ]
         }
@@ -905,10 +839,6 @@
             "displayName": "delete_comment"
         },
         {
-            "name": "get_comments",
-            "displayName": "get_comments"
-        },
-        {
             "name": "create_collabs",
             "displayName": "create_collabs"
         },
@@ -969,8 +899,12 @@
             "displayName": "create_project"
         },
         {
-            "name": "create_milestone",
-            "displayName": "create_milestone"
+            "name": "update_project",
+            "displayName": "update_project"
+        },
+        {
+            "name": "delete_project",
+            "displayName": "delete_project"
         }
     ]
 }

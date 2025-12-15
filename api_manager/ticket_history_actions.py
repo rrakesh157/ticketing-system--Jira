@@ -10,9 +10,6 @@ from ticketing_model import Ticketing,TicketingCreate,TicketHistory,TicketHistor
 router = APIRouter(prefix='/ticket-history')
 
 
-
-
-
 # Action create_history
 @router.post('/create-history', tags=['TicketHistory'])
 async def ticket_history_create_history(data: ticketing_model.TickethistoryCreateHistoryParams):

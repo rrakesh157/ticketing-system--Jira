@@ -16,12 +16,11 @@ router = APIRouter(prefix='/users')
 
 
 
-
 async def send_plain_email(email_list, fm,password):
     message = MessageSchema(
         subject="Your Login Credentials",
         recipients=email_list,  
-        body=f"""This is your link to signup page.
+        body=f"""These are your credentails and link  to signup page.
                 email = {email_list[0]},
                 password = {password}""",
         subtype="plain"
@@ -79,7 +78,6 @@ async def users_add_user(data: ticketing_model.UsersAddUserParams):
          )
 
         fm = FastMail(conf)
-
         
         password = f"{str(uuid.uuid4())[:6]}"
 
@@ -122,9 +120,6 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return password_hash.hash(password)
-
-
-
 
 
 # Action sign_in

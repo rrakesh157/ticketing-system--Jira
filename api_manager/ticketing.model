@@ -129,7 +129,9 @@ Model Ticketing {
 
         label optional str
         progress optional int
-        type optional Type  
+        type optional Type 
+
+        milestone_id optional str
 	    
         file_attachment optional list str
 
@@ -165,8 +167,6 @@ Model TicketHistory {
 
     }
 
-
-
     Action=> get_ticket_id{
     
         ticket_id str
@@ -178,53 +178,45 @@ Config=>{
 }
 }
 
-Model Reply internal{
+
+
+Model TicketComments {
+
+    ticket_id int
     user_id int
-    comment optional str
-    created_at optional datetime
-
-}
-
-Model TicketComment {
-
-    ticket_id  optional int
-    commented_by optional int
+    parent_id int
     comment_text optional str
-    attachment_path optional str
     edited optional bool
-    reply optional list Reply
+
 
     Action=> create_comment{
 
-            ticket_id  optional int
-            commented_by optional int
-            comment_text optional str
-            attachment_path optional str
-            
+        ticket_id int
+        user_id int
+        parent_id optional int    
+        comment_text optional str
+        
     }
-
     Action=> update_comment{
 
-            comment_id  optional int
-            commented_by optional int
-            comment_text optional str
-            attachment_path optional str
-            edited optional bool
+        comment_id  optional int
+        commented_by optional int
+        comment_text optional str
     }
 
     Action=> delete_comment{
-        comment_id str
-    }
 
-    Action=> get_comments{
-        ticket_id str
+        comment_id int
     }
 
     Config=>{
-        foreign_keys='ticket_id=ticketing.id::int;instance_id=ticketcomment.ticket_id'
+
+        foreign_keys='ticket_id=ticketing.id::int;instance_id=ticketcomments.ticket_id user_id=users.id::int;instance_id=ticketcomments.user_id parent_id=ticketcomments.id::int;instance_id=ticketcomments.id'
         crud_operations='read'
     }
 }
+
+
 
 
 Model TicketCollaborators {
@@ -401,33 +393,25 @@ Model Projects {
   
     }
 
+    Action=> update_project{
+
+        project_id optional int
+        project_name str
+        description optional str
+        created_by_id optional int
+
+    }
+
+    Action=> delete_project{
+        project_id optional int
+    }
+
     Config=>{
         foreign_keys='created_by_id=users.id::int;instance_id=projects.created_by_id'
         crud_operations='read' 
         }
     }
 
-Model Milestone {
 
-    project_id int
-    name optional str
-    description optional str
-    start_date optional datetime
-    end_date optional datetime
-
-    Action=> create_milestone{
-        project_id int
-        name optional str
-        description optional str
-        start_date optional datetime
-        end_date optional datetime
-    }
-    
-    Config=>{
-        foreign_keys='project_id=projects.id::int;instance_id=milestone.project_id'
-        crud_operations='read'
-    }
-    
-    }
 
 

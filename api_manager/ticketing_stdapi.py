@@ -27,14 +27,14 @@ async def get_all(response: Response, params=Depends(urdhva_base.queryparams.Que
     return await ticketing_model.TicketHistory.get_all(params, skip_secrets=True)
 
 
-@router.get('/ticket-comment/{id}', response_model=ticketing_model.TicketComment, tags=['TicketComment'])
+@router.get('/ticket-comments/{id}', response_model=ticketing_model.TicketComments, tags=['TicketComments'])
 async def get(id: str):
-    return await ticketing_model.TicketComment.get(id, skip_secrets=True)
+    return await ticketing_model.TicketComments.get(id, skip_secrets=True)
 
 
-@router.get('/ticket-comment', response_model=ticketing_model.TicketCommentGetResp, tags=['TicketComment'])
+@router.get('/ticket-comments', response_model=ticketing_model.TicketCommentsGetResp, tags=['TicketComments'])
 async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
-    return await ticketing_model.TicketComment.get_all(params, skip_secrets=True)
+    return await ticketing_model.TicketComments.get_all(params, skip_secrets=True)
 
 
 @router.get('/ticket-collaborators/{id}', response_model=ticketing_model.TicketCollaborators, tags=['TicketCollaborators'])
@@ -95,13 +95,3 @@ async def get(id: str):
 @router.get('/projects', response_model=ticketing_model.ProjectsGetResp, tags=['Projects'])
 async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
     return await ticketing_model.Projects.get_all(params, skip_secrets=True)
-
-
-@router.get('/milestone/{id}', response_model=ticketing_model.Milestone, tags=['Milestone'])
-async def get(id: str):
-    return await ticketing_model.Milestone.get(id, skip_secrets=True)
-
-
-@router.get('/milestone', response_model=ticketing_model.MilestoneGetResp, tags=['Milestone'])
-async def get_all(response: Response, params=Depends(urdhva_base.queryparams.QueryParams)):
-    return await ticketing_model.Milestone.get_all(params, skip_secrets=True)
