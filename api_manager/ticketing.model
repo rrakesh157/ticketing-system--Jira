@@ -6,10 +6,11 @@ Enum Status str {
 
 Enum State str {
     ToDo='ToDo'
-    InProgress='InProgress'
+    In Progress='In Progress'
     Cancelled='Cancelled'
     Resolved='Resolved'
-    OnHold='OnHold'
+    On Hold='On Hold'
+    Re Open = 'Re Open'
 }
 
 Enum Severity str {
@@ -21,29 +22,18 @@ Enum Severity str {
 
 Enum TicketType str{
     ToDo = 'TicketRaised'
-    InProgress = 'TicketInProgress'
+    In Progress = 'TicketInProgress'
     Cancelled = 'TicketCancelled'
     Resolved = 'TicketResolved'
-    OnHold = 'TicketOnHold'  
+    On Hold = 'TicketOnHold'
+    Re Open = 'TicketReOpened'
 }
 
 
-Model Ticket_History internal {
-    description optional str
-    processed_time optional str
-    allocated_time optional str
-    action_msg optional str
-    action_type optional str
-}
-    
-Model Merge_History internal {
-    ticket_id optional str 
-    merge_ticket_id list str
-    comment optional str
-    processed_time optional str
-    allocated_time optional str
-    action_msg optional str
-    action_type optional str
+Enum Type str{
+    task='task'
+    milestone='milestone'
+    summary='summary'
 }
 
 
@@ -71,39 +61,42 @@ Model Ticketing {
 
     merge_status optional bool
 
+    label optional str
+    progress optional int
+    type optional Type
+
     milestone_id optional str
     assignee_id optional str
     reporter_id optional str
 
     parent_ticket_id  optional str  
 
-    estimated_hours optional datetime        
-    total_hours_spent optional datetime
-    due_date optional datetime
+    allocated_hours optional datetime        
     start_date optional datetime
-    end_date optional datetime
+    due_date optional datetime
     
     Action=> create_ticket {
-        
+
         project_id optional str      
         board_id optional str
         workflow_id optional str
         status_id optional str
 
-	    ticket_state State
-	    ticket_severity Severity
+        ticket_status Status
+        ticket_state State
+        ticket_severity Severity
+        file_attachment optional list str
 
-	    summary optional str
-	    description optional str
-        comment optional str
+        summary optional str
+        description optional str
 
-	    file_attachment optional list str
-	    
-        assignee_id optional str
-        reporter_id optional str
+        parent_ticket_id  optional str
+
+        progress optional int
+        type optional Type
 
         start_date optional datetime
-	    end_date optional datetime
+        due_date optional datetime
 
     }
 
@@ -113,16 +106,33 @@ Model Ticketing {
         file_path optional str
     }
 
+
     Action=> update_ticket {
 
-        update_id str
+        project_id optional str      
+        board_id optional str
+        workflow_id optional str
+        status_id optional str
+
+        update_id int
+
+        ticket_status Status
 	    ticket_state State
         ticket_severity Severity
 
 	    summary optional str
 	    description optional str
 	    comment optional str
-        merge_status optional bool	    
+
+        parent_ticket_id  optional str
+
+        merge_status optional bool
+
+        label optional str
+        progress optional int
+        type optional Type 
+
+        milestone_id optional str
 	    
         file_attachment optional list str
 
@@ -130,7 +140,7 @@ Model Ticketing {
         assignee_id optional str
 
         start_date optional datetime
-	    end_date optional datetime
+	    due_date optional datetime
 
     }
 
@@ -155,6 +165,12 @@ Model TicketHistory {
         field_name optional str
         old_value optional str
         new_value optional str
+
+    }
+
+    Action=> get_ticket_id{
+    
+        ticket_id str
     }
 
 Config=>{
@@ -162,3 +178,241 @@ Config=>{
     crud_operations='read'
 }
 }
+
+
+
+Model TicketComments {
+
+    ticket_id int
+    user_id int
+    parent_id int 
+    comment_text optional str
+    edited optional bool
+
+
+    Action=> create_comment{
+
+        ticket_id int
+        user_id int
+        parent_id optional int    
+        comment_text optional str
+        
+    }
+    Action=> update_comment{
+
+        comment_id  optional int
+        user_id optional int
+        comment_text optional str
+    }
+
+    Action=> delete_comment{
+
+        comment_id int
+    }
+
+    Config=>{
+
+        foreign_keys='ticket_id=ticketing.id::int;instance_id=ticketcomments.ticket_id user_id=users.id::int;instance_id=ticketcomments.user_id parent_id=ticketcomments.id::int;instance_id=ticketcomments.id'
+        crud_operations='read'
+    }
+}
+
+
+
+
+Model TicketCollaborators {
+
+    ticket_id optional int
+    user_id optional int
+
+    Action=> create_collabs{
+        
+        ticket_id optional int
+        user_id optional int   
+    }
+
+    Action=> get_collabs{
+
+        ticket_id str
+    }
+
+    Action=> delete_collabs{
+
+        ticket_id optional int
+        user_id optional int 
+
+    }
+
+    Config=>{
+        foreign_keys='ticket_id=ticketing.id::int;instance_id=ticketcollaborators.ticket_id, user_id=users.id::int;instance_id=ticketcollaborators.user_id'
+        crud_operations='read'
+    }
+}
+
+
+
+Model Workflow{
+
+    workflow_name unique_field str
+    created_by str
+
+    Action=> add_workflow{
+        workflow_name str
+        created_by str
+    }
+
+    Action=> update_workflow{
+
+        workflow_id str
+        workflow_name str
+        created_by str
+    }
+
+    Action=> delete_workflow {
+        workflow_id int
+    }
+
+    Config=>{
+        crud_operations='read'
+    }
+}
+
+Model order internal{
+
+    ticket_state str
+    ticket_status str
+}
+
+Model WorkflowStatus{
+
+    workflow_id int
+    ticket_state str
+    ticket_status str
+    order_no int
+    
+    Action=> update_order{
+
+        workflow_id int
+        workflow_order list order
+        
+    }
+
+
+    Config=>{
+        foreign_keys='workflow_id=workflow.id::int;instance_id=workflowstatus.workflow_id'
+        crud_operations='read'
+    }
+
+}
+
+Model Boards{
+
+
+    workflow_id int
+    board_name unique_field str
+    board_owner str
+
+    
+    Action=> add_board{
+
+        workflow_id int
+        board_name str
+        board_owner str
+    }
+
+    Action=> update_board{
+
+        board_id str
+        workflow_id optional int
+        board_name optional str
+        board_owner optional str
+    }
+
+    Action=> delete_board{
+        board_id int
+    }
+
+    Action=> get_board_tickets{
+        board_id str
+        
+    }
+
+
+    Config=>{
+        foreign_keys='workflow_id=workflow.id::int;instance_id=boards.workflow_id'
+        crud_operations='read'
+    }
+    
+}
+
+
+Model Users {
+    
+    First_name optional str
+    Last_name optional str
+    Email str
+    Phone_number optional str
+    Password_hash str
+    Role optional str
+    Is_active bool
+
+    Action=> add_user{
+        email list str
+        role str
+    }
+
+    Action=> sign_up{
+
+        first_name optional str
+        last_name optional str
+        email str
+        password str
+        phone_number optional str
+    }
+
+    Action=> sign_in{
+        email str
+        password str       
+    }
+
+    Config=>{
+    crud_operations='read'
+        }
+}
+
+Model Projects {
+
+    project_name str
+    description optional str
+    created_by_id optional int
+
+    Action=> create_project {
+
+        project_name str
+        description optional str
+        created_by_id optional int
+  
+    }
+
+    Action=> update_project{
+
+        project_id optional int
+        project_name str
+        description optional str
+        created_by_id optional int
+
+    }
+
+    Action=> delete_project{
+        project_id optional int
+    }
+
+    Config=>{
+        foreign_keys='created_by_id=users.id::int;instance_id=projects.created_by_id'
+        crud_operations='read' 
+        }
+    }
+
+
+
+

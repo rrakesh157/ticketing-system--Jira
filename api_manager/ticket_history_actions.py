@@ -2,7 +2,8 @@
 
 import ticketing_enum
 import ticketing_model
-from fastapi import APIRouter
+import urdhva_base
+from fastapi import APIRouter,Response, Depends
 from urdhva_base import QueryParams
 from ticketing_model import Ticketing,TicketingCreate,TicketHistory,TicketHistoryCreate
 
@@ -19,20 +20,18 @@ async def ticket_history_create_history(data: ticketing_model.TickethistoryCreat
         params.q = f"id='{data.ticket_id}'"
         params.limit = 1
 
-        ticket_result = await Ticketing.get_all(params,resp_type='plain')
+        result = await Ticketing.get_all(params,resp_type='plain')
 
-        if not ticket_result.get('data',[]):
+        if not result.get('data',[]):
             return {
                 'status':False,
                 "message":"Ticket not found"
             }
         
-        if data.old_value in ['Open','Close','Pending']:
+        if data.new_value in ['Open','Close','Pending']:
             tdata["field_name"] = "Status"
-        if data.old_value in ['Critical','High','Medium','Low']:
+        if data.new_value in ['Critical','High','Medium','Low']:
             tdata["field_name"] = "Severity"
-        if data.old_value == None:
-            tdata["field_name"] = "State"
         else:
             tdata["field_name"] = "State"
 
@@ -47,9 +46,42 @@ async def ticket_history_create_history(data: ticketing_model.TickethistoryCreat
         
     }
 
-        
     except Exception as e:
         return{
             'status':False,
             'message':str(e)
         }
+
+
+# Action get_ticket_id
+@router.post('/get-ticket-id', tags=['TicketHistory'])
+async def ticket_history_get_ticket_id(data: ticketing_model.TickethistoryGetTicketIdParams):
+    try:
+        tdata = data.__dict__
+        print("tdata",tdata)
+        params = QueryParams()
+        params.q = f"ticket_id='{data.ticket_id}'"
+        params.limit = 1
+
+        ticket_result = await TicketHistory.get_all(params,resp_type='plain')
+
+        if not ticket_result.get('data',[]):
+            return {
+                'status':False,
+                "message":"Ticket Id not found"
+            }
+        qurey = f"select * from ticket_history where ticket_id={data.ticket_id}"
+        res = await TicketHistory.get_aggr_data(qurey,limit=0)
+        print(res)
+        return {
+            "status":True,
+            "data":res
+        }
+    except Exception as e:
+        return{
+            'status':False,
+            'message':str(e)
+        }
+    
+
+
