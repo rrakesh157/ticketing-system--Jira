@@ -63,7 +63,7 @@ class Settings(pydantic_settings.BaseSettings):
     docs_path: str = "/"
 
     # JWT
-    jwt_secret_key: str = ""
+    jwt_secret_key: str = "12a34bc8d98e8f8g7h78i12j23k2l34m4n5o34p23q12r54s38tu9v2w12x7y2z3"
     jwt_algorithm: str = "HS256"
 
     # Header based authentication Enabled or Not
